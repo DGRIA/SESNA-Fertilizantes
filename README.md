@@ -1,7 +1,6 @@
 # SESNA-Fertilizantes
 
-This README is WIP
-
+Esta herramienta digital forma parte de la Secretaría Ejecutiva del Sistema Nacional de Anticorrupción de la República de México https://www.sesna.gob.mx/
 ## Estructura del Proyecto
 
 Este proyecto está estructurado en varios directorios, cada uno con un propósito específico.
