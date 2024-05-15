@@ -320,3 +320,5 @@ pyrightconfig.json
 datasets/
 productores_autorizados/
 dataset_inegi/
+data/*
+!/data/.gitkeep
