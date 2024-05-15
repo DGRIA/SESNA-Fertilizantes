@@ -12,7 +12,7 @@ Sus funciones son las siguientes:
 - `src/`: Contiene el código fuente del proyecto.
 - `tests/`: Contiene los tests del proyecto.
 
-## Ejecución Local :home: :computer:
+## Ejecución Local :house: :computer:
 Se recomienda encarecidamente el uso de un entorno virtual para la ejecución de este proyecto.
 Para crear un entorno virtual puede consultar la siguiente documentación:
 - [Entornos Virtuales en Python](https://docs.python.org/3/library/venv.html)
