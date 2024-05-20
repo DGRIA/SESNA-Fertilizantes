@@ -22,6 +22,10 @@ Para instalar las dependencias del proyecto, ejecute el siguiente comando:
 ```bash
 pip install -r requirements.txt
 ```
+Para ejecutar los tests del proyecto, ejecute el siguiente comando:
+```bash
+pytest
+```
 Para ejecutar el proyecto, ejecute el siguiente comando:
 ```bash
 python main.py
