@@ -10,9 +10,9 @@ def download_datasets(urls, destination_folder):
             destination_path = f"{destination_folder}/{filename}"
             with open(destination_path, 'wb') as file:
                 file.write(response.content)
-            print(f"Dataset {i+1} downloaded successfully.")
+            print(f"Dataset {i+1} downloaded successfully.\n")
         else:
-            print(f"Failed to download dataset {i+1}. HTTP Status Code: {response.status_code}")
+            print(f"Failed to download dataset {i+1}. URL: {url}\n")
 
 # Example usage:
 download_urls = []
