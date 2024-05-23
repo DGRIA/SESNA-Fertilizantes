@@ -1,6 +1,6 @@
-bs4
-requests
-pandas
-numpy
-seaborn
-fuzzywuzzy
+streamlit==1.34.0
+requests==2.32.2
+pandas==2.2.2
+numpy==1.26.4
+seaborn==0.13.2
+thefuzz==0.18.0
