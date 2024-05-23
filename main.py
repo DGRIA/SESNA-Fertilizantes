@@ -24,6 +24,7 @@ def clear_directory(directory):
 
 
 def main():
+    st.image('docs/images/mottum2.svg', width=660)
     clear_directory('data/fertilizantes_autorizados')
     with st.spinner('Ejecutando scripts... Por favor espera.'):
         logger.info("Inicio de Ejecución")
@@ -35,8 +36,6 @@ def main():
                 break
             elif i == 0:  # After the first script has run
                 lines = [line for line in result.stdout.split('\n') if line]  # Ignore empty lines
-                st.text(f"Parsed lines:\n{lines}")
-
                 try:
                     # Extract the section with the download results
                     start_index = lines.index("====DOWNLOAD RESULTS====") + 1
@@ -74,6 +73,13 @@ def main():
                 logger.info("Fin de Ejecución")
 
 if __name__ == '__main__':
+    col1, col2, col3 = st.columns(3)
+    col1.write("\n" * 10)
+
+    col1.image('docs/images/mottumfav.svg', width=200)
+    col2.markdown("<h1 style='text-align: center; color: white;'> & </h1>", unsafe_allow_html=True)
+    col3.image('docs/images/SESNA.png', width=300)
     st.title('Fertilizantes Dataset')
     if st.button('Descarga directa fertilizantes autorizados'):
         main()
+    st.image('docs/images/mottum2.svg', width=660)
