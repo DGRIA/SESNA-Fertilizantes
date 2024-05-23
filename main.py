@@ -24,9 +24,8 @@ def clear_directory(directory):
 
 
 def main():
-    st.image('docs/images/mottum2.svg', width=660)
     clear_directory('data/fertilizantes_autorizados')
-    with st.spinner('Ejecutando scripts... Por favor espera.'):
+    with st.spinner('Ejecutando scripts... Esto puede tardar unos minutos.'):
         logger.info("Inicio de Ejecución")
         scripts = ["src/dataset_download.py", "src/eda.py", "src/merge.py"]
         for i, script in enumerate(scripts):
@@ -54,18 +53,18 @@ def main():
                     else:
                         st.write("Todos los datasets de la URL han sido descargados de forma exitosa.\n")
                     
-                    st.write("Comenzando EDA.\n")
+                    st.write("Comenzando EDA...\n")
                 except (IndexError, ValueError) as e:
                     st.error(f"Error parsing output from {script}: {e}")
 
             elif i == 1:  # After the first script has run
                 st.write("\nEDA terminado.\n")
-                st.write("Comenzando merge.\n")
+                st.write("Comenzando merge...\n")
             elif i == 2:  # After the first script has run
-                st.write("El dataset esta listo!")
+                st.write("¡El dataset está listo!")
                 with open("data/productores_autorizados_final.csv", "rb") as file:
                             st.download_button(
-                                label="Descargar dataset",
+                                label="Pulsa aquí para descargar el dataset completo.",
                                 data=file,
                                 file_name="productores_autorizados_final.csv",
                                 mime="text/csv",
@@ -73,13 +72,11 @@ def main():
                 logger.info("Fin de Ejecución")
 
 if __name__ == '__main__':
-    col1, col2, col3 = st.columns(3)
+    st.title('Datos de Fertilizantes Autorizados')
+    col1, col2 = st.columns(2)
     col1.write("\n" * 10)
 
-    col1.image('docs/images/mottumfav.svg', width=200)
-    col2.markdown("<h1 style='text-align: center; color: white;'> & </h1>", unsafe_allow_html=True)
-    col3.image('docs/images/SESNA.png', width=300)
-    st.title('Fertilizantes Dataset')
-    if st.button('Descarga directa fertilizantes autorizados'):
+    col1.image('docs/images/mottum.svg', width=300)
+    col2.image('docs/images/SESNA2.png', width=300)
+    if st.button('Pulsa para comenzar el proceso de descarga y limpieza de datos.'):
         main()
-    st.image('docs/images/mottum2.svg', width=660)
