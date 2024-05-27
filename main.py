@@ -72,11 +72,40 @@ def main():
                 logger.info("Fin de Ejecución")
 
 if __name__ == '__main__':
-    st.title('Datos de Fertilizantes Autorizados')
-    col1, col2 = st.columns(2)
-    col1.write("\n" * 10)
+    st.markdown("<h1 style='text-align: center; color: black;'>Datos de Fertilizantes Autorizados</h1>", unsafe_allow_html=True)
 
-    col1.image('docs/images/mottum.svg', width=300)
-    col2.image('docs/images/SESNA2.png', width=300)
-    if st.button('Pulsa para comenzar el proceso de descarga y limpieza de datos.'):
+    cols = st.columns([1,5,1])  # Create three columns
+    cols[1].image('docs/images/SESNA2.png', width=500) 
+
+    # Sidebar
+    st.sidebar.header("Sobre la aplicación")
+    st.sidebar.markdown(
+        """
+        La siguiente aplicacion ha sido desarrollada para [SESNA](https://www.sesna.gob.mx/).
+        El propósito de esta aplicación es la descarga, limpieza y unión de las bases de datos
+        publicadas en la siguiente URL: [Programa de Fertilizantes 2023 Listados Autorizados](https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-autorizados).
+        """
+    )
+
+    st.sidebar.header("Documentación y herramientas")
+    st.sidebar.markdown(
+        """
+    - [Documentación de Streamlit](https://docs.streamlit.io/)
+    - [Cheat sheet](https://docs.streamlit.io/library/cheatsheet)
+    - [Book](https://www.amazon.com/dp/180056550X) (Getting Started with Streamlit for Data Science)
+    - [Blog](https://blog.streamlit.io/how-to-master-streamlit-for-data-science/) (How to master Streamlit for data science)
+    """
+    )
+
+    st.sidebar.header("Deploy")
+    st.sidebar.markdown(
+        "You can quickly deploy Streamlit apps using [Streamlit Community Cloud](https://streamlit.io/cloud) in just a few clicks."
+    )
+
+    st.sidebar.markdown("<br>", unsafe_allow_html=True)
+
+    st.sidebar.image('docs/images/mottum.svg', width= 280)
+
+    cols_button = st.columns([1,3,1])  # Create three columns for the button
+    if cols_button[1].button('Pulsa para comenzar el proceso de descarga y limpieza de datos.'):
         main()
