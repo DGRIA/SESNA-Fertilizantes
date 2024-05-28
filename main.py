@@ -44,12 +44,14 @@ def main():
                     good_urls = lines[start_index + 3].split(',')
 
                     if good_count > 0:
-                        st.write(f"{good_count} datasets se han descargado de forma exitosa. URLs: {good_urls}")
+                        st.write(f"{good_count} datasets se han descargado de forma exitosa.")
+                        st.selectbox("URLs de los datasets descargados con éxito:", good_urls)
                     else:
                         st.write("No se pudo descargar ningún dataset de: https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-autorizados.\n")
-                    
+
                     if failed_count > 0:
-                        st.write(f"Falló la descarga de {failed_count} datasets. URLs: {failed_urls}")
+                        st.write(f"Falló la descarga de {failed_count} datasets.")
+                        st.selectbox("URLs de los datasets que fallaron al descargar:", failed_urls)
                     else:
                         st.write("Todos los datasets de la URL han sido descargados de forma exitosa.\n")
                     
@@ -73,10 +75,21 @@ def main():
 
 if __name__ == '__main__':
     st.markdown("<h1 style='text-align: center; color: black;'>Datos de Fertilizantes Autorizados</h1>", unsafe_allow_html=True)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
 
     cols = st.columns([1,5,1])  # Create three columns
     cols[1].image('docs/images/SESNA2.png', width=500) 
 
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    with st.expander(("Productores autorizados")):
+        st.markdown((
+            """
+        La Siguiente solución ha sido desarrollada para el laboratorio de UNPD de SESNA. 
+        """
+        ))
+    st.markdown("<br>", unsafe_allow_html=True)
     # Sidebar
     st.sidebar.header("Sobre la aplicación")
     st.sidebar.markdown(
@@ -97,14 +110,14 @@ if __name__ == '__main__':
     """
     )
 
-    st.sidebar.header("Deploy")
+    st.sidebar.header("Sobre Mottum")
     st.sidebar.markdown(
-        "You can quickly deploy Streamlit apps using [Streamlit Community Cloud](https://streamlit.io/cloud) in just a few clicks."
+        "En [mottum](https://mottum.io/) nos compromentemos con un useo responsable de las ciencia de datos y la inteligencia artificial (IA) para resolver desafíos complejos de gobiernos y organizaciones."
     )
 
     st.sidebar.markdown("<br>", unsafe_allow_html=True)
 
-    st.sidebar.image('docs/images/mottum.svg', width= 280)
+    st.sidebar.image('docs/images/mottum.svg', width= 400)
 
     cols_button = st.columns([1,3,1])  # Create three columns for the button
     if cols_button[1].button('Pulsa para comenzar el proceso de descarga y limpieza de datos.'):
