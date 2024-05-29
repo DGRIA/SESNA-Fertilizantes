@@ -33,5 +33,5 @@ urls = scrape_urls.scrape_urls(url)
 for url in urls:
     download_urls.append(url)
 
-download_destination_folder = "data/fertilizantes_autorizados"
+download_destination_folder = "data/productores_autorizados"
 download_datasets(download_urls, download_destination_folder)
