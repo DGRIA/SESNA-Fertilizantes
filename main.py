@@ -33,7 +33,7 @@ def main():
 
     with st.spinner('Ejecutando scripts... Esto puede tardar unos minutos.'):
         logger.info("Inicio de Ejecución")
-        scripts = ["src/dataset_download.py", "src/eda.py", "src/merge.py"]
+        scripts = ["src/dataset_download.py", "src/data_cleaning_and_merge.py"]
         progress_bar = st.progress(0)  # Initialize progress bar
         for i, script in enumerate(scripts):
             result = subprocess.run([sys.executable, script], check=False, text=True, capture_output=True)
@@ -117,7 +117,7 @@ if __name__ == '__main__':
     - [Documentación de Streamlit](https://docs.streamlit.io/)
     - [Cheat sheet](https://docs.streamlit.io/library/cheatsheet)
     - [Book](https://www.amazon.com/dp/180056550X) (Getting Started with Streamlit for Data Science)
-    - [Blog](https://blog.streamlit.io/how-to-master-streamlit-for-data-science/) (How to master Streamlit for data science)
+    - [Jupyter](http://localhost:8888/tree) (How to master Streamlit for data science)
     """
     )
 
