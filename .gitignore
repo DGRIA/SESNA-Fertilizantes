@@ -322,4 +322,5 @@ productores_autorizados/
 dataset_inegi/
 data/*
 !/data/.gitkeep
+!/data/productores_autorizados/.gitkeep
 /logs/
