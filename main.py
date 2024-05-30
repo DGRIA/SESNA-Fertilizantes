@@ -22,7 +22,15 @@ def clear_directory(directory):
             print(f'Failed to delete {file_path}. Reason: {e}')
 
 def main():
+    if not os.path.exists('data'):
+        os.makedirs('data')
+        print("Directory 'data' missing, creating data directory.")
+    if not os.path.exists('data/productores_autorizados'):
+        os.makedirs('data/productores_autorizados')
+        print("Directory 'data/productores_autorizados' missing, creating data/productores_autorizados.")
+
     clear_directory('data/productores_autorizados')
+
     with st.spinner('Ejecutando scripts... Esto puede tardar unos minutos.'):
         logger.info("Inicio de Ejecución")
         scripts = ["src/dataset_download.py", "src/eda.py", "src/merge.py"]
