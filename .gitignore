@@ -316,10 +316,13 @@ pyrightconfig.json
 .history
 .ionide
 
+# MAC
+.DS_Store
 ## FOR THIS PROJECT (Provisional)
 datasets/
 productores_autorizados/
 dataset_inegi/
 data/*
 !/data/.gitkeep
+!/data/productores_autorizados/.gitkeep
 /logs/

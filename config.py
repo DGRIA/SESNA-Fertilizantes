@@ -41,6 +41,7 @@ class LoggerConfig:
 class PathConfig:
     def __init__(self):
         self.data_path = os.path.join(os.getcwd(), "data")
+        self.productores_autorizados_path = os.path.join(os.getcwd(), "data/productores_autorizados")
         self.docs_path = os.path.join(os.getcwd(), "docs")
         self.log_path = os.path.join(os.getcwd(), "logs")
         self.src_path = os.path.join(os.getcwd(), "src")
