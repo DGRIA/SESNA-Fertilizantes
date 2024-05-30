@@ -53,3 +53,5 @@ try:
 finally:
     # Close the driver
     driver.quit()
+
+# TODO: Revisión para descargar los datos de INEGI

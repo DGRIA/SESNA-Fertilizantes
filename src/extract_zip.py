@@ -19,3 +19,5 @@ if zip_file is not None:
         csv_path = os.path.join(data_dir, csv_file)
         new_csv_path = os.path.join(data_dir, 'dataset_inegi.csv')
         shutil.move(csv_path, new_csv_path)
+
+# TODO: Revisión para extraer los datos de INEGI
