@@ -10,7 +10,6 @@ import shutil
 logger = logging.getLogger("Fertilizantes")
 logger.setLevel(logging.INFO)
 
-
 def clear_directory(directory):
     for filename in os.listdir(directory):
         file_path = os.path.join(directory, filename)
@@ -22,14 +21,16 @@ def clear_directory(directory):
         except Exception as e:
             print(f'Failed to delete {file_path}. Reason: {e}')
 
-
 def main():
-    clear_directory('data/fertilizantes_autorizados')
+    clear_directory('data/productores_autorizados')
     with st.spinner('Ejecutando scripts... Esto puede tardar unos minutos.'):
         logger.info("Inicio de Ejecución")
         scripts = ["src/dataset_download.py", "src/eda.py", "src/merge.py"]
+        progress_bar = st.progress(0)  # Initialize progress bar
         for i, script in enumerate(scripts):
             result = subprocess.run([sys.executable, script], check=False, text=True, capture_output=True)
+            progress_percent = (i + 1) / len(scripts)  # Calculate progress percentage
+            progress_bar.progress(progress_percent)  # Update progress bar
             if result.returncode != 0:
                 logger.error(f"{script} failed with error:\n{result.stderr}")
                 break
@@ -54,10 +55,12 @@ def main():
                         st.selectbox("URLs de los datasets que fallaron al descargar:", failed_urls)
                     else:
                         st.write("Todos los datasets de la URL han sido descargados de forma exitosa.\n")
-                    
-                    st.write("Comenzando EDA...\n")
+
+                    with st.spinner('Comenzando EDA...'):
+                        continue
                 except (IndexError, ValueError) as e:
-                    st.error(f"Error parsing output from {script}: {e}")
+                        st.error(f"Error parsing output from {script}: {e}")
+                    
 
             elif i == 1:  # After the first script has run
                 st.write("\nEDA terminado.\n")
