@@ -316,6 +316,8 @@ pyrightconfig.json
 .history
 .ionide
 
+# MAC
+.DS_Store
 ## FOR THIS PROJECT (Provisional)
 datasets/
 productores_autorizados/
