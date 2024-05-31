@@ -21,6 +21,50 @@ def clear_directory(directory):
         except Exception as e:
             print(f'Failed to delete {file_path}. Reason: {e}')
 
+def show_intro():
+    st.markdown((
+        """
+            La siguiente aplicacion ha sido desarrollada para [SESNA](https://www.sesna.gob.mx/).
+            El propósito de esta aplicación es la descarga, limpieza y unión de las bases de datos
+            publicadas en la siguiente URL: [Programa de Fertilizantes 2023 Listados Autorizados](https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-autorizados).
+        """
+        ))
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    st.image('docs/images/mottum.svg', use_column_width=True)
+
+def start_process():
+    cols_button = st.columns([1,3,1])  # Create three columns for the button
+    if cols_button[1].button('Pulsa para comenzar el proceso de descarga y limpieza de datos.', key='start_process_button'):
+        st.session_state.button_pressed = True
+        st.session_state.main_running = True
+        main()
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    st.image('docs/images/mottum.svg', use_column_width=True)
+
+def show_finished():
+    if os.path.exists("data/merged_dataset.csv"):
+        st.markdown("<h2 style='text-align: center;'>¡El dataset está listo!</h2>", unsafe_allow_html=True)
+        cols = st.columns([1,2,1])
+        with open("data/merged_dataset.csv", "rb") as file:
+            button_clicked = cols[1].download_button(
+                label="Pulsa aquí para descargar el dataset completo.",
+                data=file,
+                file_name="merged_dataset.csv",
+                mime="text/csv",
+            )
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.image('docs/images/mottum.svg', use_column_width=True)
+
+    else:
+        st.markdown("<h2 style='text-align: center;'>Necesitas ejecutar el proceso antes de venir a esta pantalla.</h2>", unsafe_allow_html=True)
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        st.image('docs/images/mottum.svg', use_column_width=True)
+
 def main():
     if not os.path.exists('data'):
         os.makedirs('data')
@@ -42,6 +86,8 @@ def main():
             if result.returncode != 0:
                 logger.error(f"{script} failed with error:\n{result.stderr}")
                 break
+            elif i == len(scripts) - 1:  # After the last script has run
+                st.success("El proceso ha terminado. Por favor, descargue el conjunto de datos en la pestaña 'Proceso terminado'.")
             elif i == 0:  # After the first script has run
                 lines = [line for line in result.stdout.split('\n') if line]  # Ignore empty lines
                 try:
@@ -66,70 +112,85 @@ def main():
 
                     with st.spinner('Comenzando EDA...'):
                         continue
+
                 except (IndexError, ValueError) as e:
                         st.error(f"Error parsing output from {script}: {e}")
                     
 
-            elif i == 1:  # After the first script has run
-                st.write("\nEDA terminado.\n")
-                st.write("Comenzando merge...\n")
-            elif i == 2:  # After the first script has run
-                st.write("¡El dataset está listo!")
-                with open("data/productores_autorizados_final.csv", "rb") as file:
-                            st.download_button(
-                                label="Pulsa aquí para descargar el dataset completo.",
-                                data=file,
-                                file_name="productores_autorizados_final.csv",
-                                mime="text/csv",
-                            )
+                progress_bar.progress(1)  # Update progress bar to 100%
                 logger.info("Fin de Ejecución")
 
 if __name__ == '__main__':
-    st.markdown("<h1 style='text-align: center; color: black;'>Datos de Fertilizantes Autorizados</h1>", unsafe_allow_html=True)
-    
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown('''
+                <h1 style='text-align: center; color: black; font-size: 30px;'>Servicio de ingeniería de datos para la extracción,
+                transformación y carga del Programa de Fertilizantes para el bienestar.
+                </h1> 
+                '''
+                , unsafe_allow_html=True)
 
-    cols = st.columns([1,5,1])  # Create three columns
-    cols[1].image('docs/images/SESNA2.png', width=500) 
-
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    with st.expander(("Productores autorizados")):
-        st.markdown((
-            """
-        La Siguiente solución ha sido desarrollada para el laboratorio de UNPD de SESNA. 
-        """
-        ))
     st.markdown("<br>", unsafe_allow_html=True)
     # Sidebar
-    st.sidebar.header("Sobre la aplicación")
-    st.sidebar.markdown(
-        """
-        La siguiente aplicacion ha sido desarrollada para [SESNA](https://www.sesna.gob.mx/).
-        El propósito de esta aplicación es la descarga, limpieza y unión de las bases de datos
-        publicadas en la siguiente URL: [Programa de Fertilizantes 2023 Listados Autorizados](https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-autorizados).
-        """
-    )
+    st.sidebar.image('docs/images/SESNA-logo.png', use_column_width=True)
 
-    st.sidebar.header("Documentación y herramientas")
     st.sidebar.markdown(
         """
-    - [Documentación de Streamlit](https://docs.streamlit.io/)
-    - [Cheat sheet](https://docs.streamlit.io/library/cheatsheet)
-    - [Book](https://www.amazon.com/dp/180056550X) (Getting Started with Streamlit for Data Science)
-    - [Jupyter](http://localhost:8888/tree) (How to master Streamlit for data science)
-    """
-    )
-
-    st.sidebar.header("Sobre Mottum")
-    st.sidebar.markdown(
-        "En [mottum](https://mottum.io/) nos compromentemos con un useo responsable de las ciencia de datos y la inteligencia artificial (IA) para resolver desafíos complejos de gobiernos y organizaciones."
+        La secretaria ejecutiva del Sistema Nacional Anticorrupción 
+        (SESNA) es el organismo de apoyo técnico dedicado al combate 
+        contra la corrupción en México.
+        """
     )
 
     st.sidebar.markdown("<br>", unsafe_allow_html=True)
 
-    st.sidebar.image('docs/images/mottum.svg', width= 400)
+    st.sidebar.markdown(
+        """
+        Esta página ha sido desarrollada por [mottum](https://mottum.io/) con el fin de
+        estandarizar, transformar y analizar los datos del Programa de Fertilizantes
+        para el bienestar.
+        """
+    )
+    # Initialize session state variables
+    if 'page' not in st.session_state:
+        st.session_state.page = 'Introduction'
 
-    cols_button = st.columns([1,3,1])  # Create three columns for the button
-    if cols_button[1].button('Pulsa para comenzar el proceso de descarga y limpieza de datos.'):
-        main()
+    # Create navigation menu
+    st.session_state.page = st.radio('Process', ['Introduction', 'Start Process', 'Process Finished'])
+
+    # Display the selected page
+    if st.session_state.page == 'Introduction':
+        show_intro()
+    elif st.session_state.page == 'Start Process':
+        start_process()
+    elif st.session_state.page == 'Process Finished':
+        show_finished()
+
+    st.sidebar.markdown("<br>", unsafe_allow_html=True)
+
+    st.sidebar.markdown(
+        """
+        Visita los siguientes links para más información:
+        """
+    )
+
+    st.sidebar.markdown(
+        """
+    - [Link al repositorio](https://github.com/MottumData/SESNA-Fertilizantes)
+    - [Jupyter](http://localhost:8888/tree) (How to master Streamlit for data science)
+    """
+    )
+
+    st.sidebar.markdown("<br>", unsafe_allow_html=True)
+
+    st.sidebar.markdown(
+        '**Financiado por:**',
+        unsafe_allow_html=True
+    )
+
+    st.sidebar.image('docs/images/UNDP.png', use_column_width=True)
+
+    if 'button_pressed' not in st.session_state:
+        st.session_state.button_pressed = False
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+   #image_placeholder.image('docs/images/mottum.svg', width=500)

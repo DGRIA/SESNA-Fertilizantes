@@ -143,14 +143,65 @@ def main():
 
     diccionario_Sin_VC = diccionario[diccionario["NOM_ENT"] != "Veracruz de Ignacio de la Llave"]
 
+    print(listado_productores.columns)
+
+    diccionario_manipulado = pd.read_csv('data/Diccionario_manual.csv')
+
     # Hacer el join
-    listado_productores_complete = pd.merge(listado_productores, diccionario_Sin_VC, left_on="Estado-mun-KEY",
-                                            right_on="KEY_prod", how='left', suffixes=('_prod', '_inegi'))
-    listado_productores_complete[['CVE_ENT', 'CVE_MUN']] = listado_productores_complete['CVE_MUN_Unique'].str.split('-',
-                                                                                                                    expand=True)
+    listado_productores_complete = pd.merge(listado_productores, diccionario_manipulado, left_on="Estado-mun-KEY",
+                                        right_on="KEY_prod", how='left', suffixes=('_prod', '_inegi'))
+    
+    listado_productores_complete[['CVE_ENT', 'CVE_MUN']] = listado_productores_complete['CVE_MUN_Unique'].str.split('-',expand=True)
     listado_productores_complete = listado_productores_complete[
         ['ESTADO', 'MUNICIPIO', 'NOM_MUN', 'NOM_ENT', 'CVE_ENT', 'CVE_MUN', 'ACUSE', 'APELLIDO PATERNO',
          'APELLIDO MATERNO', 'NOMBRE (S)', 'PAQUETE', 'KEY_inegi']]
+
+    # Los nombres y apellidos paternos y maternos que están vacíos y tengan número de acuse se reemplazarán por 'unknown'
+    listado_productores_complete.loc[(listado_productores_complete['APELLIDO PATERNO'].isna()) & (
+        listado_productores_complete['ACUSE'].notna()), 'APELLIDO PATERNO'] = 'unknown'
+    listado_productores_complete.loc[(listado_productores_complete['APELLIDO MATERNO'].isna()) & (
+        listado_productores_complete['ACUSE'].notna()), 'APELLIDO MATERNO'] = 'unknown'
+    listado_productores_complete.loc[
+        (listado_productores_complete['NOMBRE (S)'].isna()) & (listado_productores_complete['ACUSE'].notna()), 'NOMBRE (S)'] = 'unknown'
+    
+    listado_productores_complete = listado_productores_complete.astype({
+    'ESTADO': 'str',
+    'MUNICIPIO': 'str',
+    'ACUSE': 'str',
+    'APELLIDO PATERNO': 'str',
+    'APELLIDO MATERNO': 'str',
+    'NOMBRE (S)': 'str',
+    'PAQUETE': 'int',
+    'NOM_MUN': 'str',
+    'NOM_ENT': 'str',
+    'CVE_MUN': 'str',
+    'CVE_ENT': 'str',
+    'KEY_inegi': 'str'
+
+    })
+
+    listado_productores_complete = listado_productores_complete.rename(columns={
+    'ESTADO': 'estado1',
+    'MUNICIPIO': 'municipio1',
+    'ACUSE': 'acuse',
+    'APELLIDO PATERNO': 'apellido_paterno',
+    'APELLIDO MATERNO': 'apellido_materno',
+    'NOMBRE (S)': 'nombre_propio',
+    'PAQUETE': 'paquete',
+    'NOM_MUN': 'municipio',
+    'NOM_ENT': 'entidad',
+    'CVE_MUN': 'cve_mun',
+    'CVE_ENT': 'cve_ent',
+    'KEY_inegi': 'key_inegi'
+    })
+
+    listado_productores_complete = listado_productores_complete.drop(columns=['estado1', 'municipio1'])
+
+    listado_productores_complete['id'] = listado_productores_complete.index
+
+    # Assuming df is your DataFrame
+    ordered_columns = ['id', 'cve_ent', 'entidad', 'cve_mun', 'municipio', 'acuse', 'apellido_paterno', 'apellido_materno', 'nombre_propio', 'paquete', 'key_inegi']
+    listado_productores_complete = listado_productores_complete.reindex(columns=ordered_columns)
 
     save_to_csv(listado_productores_complete, 'data/merged_dataset.csv')
 
