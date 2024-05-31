@@ -53,7 +53,8 @@ pytest
 5. **Ejecución del proyecto**. Para ejecutar el proyecto, ejecute el siguiente comando:
 
 ```python
-streamlit main.py
+streamlit
+main.py
 ```
 
 A continuación se mostrará un mensaje similar al siguiente:
@@ -64,18 +65,32 @@ A continuación se mostrará un mensaje similar al siguiente:
   Local URL: http://localhost:8501
   Network URL: http://0.0.0.0:8501
 ```
+
 ## Docker :whale:
+
 _Sección en Desarrollo_
 
 Para ejecutar el proyecto en un contenedor de Docker, ejecute los siguientes comandos:
 
-1. Construir la imagen de Docker:
+1. **Clonar el repositorio**. Desde un terminal con git instalado, ejecute el siguiente comando:
+
+```bash
+git clone https://github.com/MottumData/SESNA-Fertilizantes.git
+```
+
+2. **Cambiar de directorio**. Una vez clonado el repositorio, cambie al directorio del proyecto:
+
+```bash
+cd SESNA-Fertilizantes
+```
+
+3. **Construir la imagen de Docker**. Ejecute el siguiente comando:
 
 ```bash
 docker build -t sesna-fertilizantes .
 ```
 
-2. Ejecutar el contenedor de Docker:
+4. **Levantar el contenedor de Docker**. Ejecute el siguiente comando:
 
 ```bash
 docker run -p 8501:8501 sesna-fertilizantes
