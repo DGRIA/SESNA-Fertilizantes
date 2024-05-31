@@ -75,7 +75,7 @@ def main():
 
     clear_directory('data/productores_autorizados')
 
-    with st.spinner('Ejecutando scripts... Esto puede tardar unos minutos.'):
+    with st.spinner('Ejecutando scripts... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado'):
         logger.info("Inicio de Ejecución")
         scripts = ["src/dataset_download.py", "src/data_cleaning_and_merge.py"]
         progress_bar = st.progress(0)  # Initialize progress bar
