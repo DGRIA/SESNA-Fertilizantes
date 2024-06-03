@@ -122,6 +122,8 @@ def main():
 
     dataset_inegi_clean["NOM_ENT_Clean"] = dataset_inegi_clean["NOM_ENT_Clean"].astype(str)
     dataset_inegi_clean["NOM_MUN_Clean"] = dataset_inegi_clean["NOM_MUN_Clean"].astype(str)
+    dataset_inegi_clean['CVE_ENT'] = dataset_inegi_clean['CVE_ENT'].astype(str)
+    dataset_inegi_clean['CVE_MUN'] = dataset_inegi_clean['CVE_MUN'].astype(str)
 
     dataset_inegi_clean["KEY_inegi"] = dataset_inegi_clean["NOM_ENT_Clean"] + "-" + dataset_inegi_clean["NOM_MUN_Clean"]
 
@@ -132,6 +134,9 @@ def main():
     diccionario = fuzzy_merge(dataset_inegi_clean, Estados_productores, 'KEY_inegi', 'KEY_prod')
 
     diccionario = diccionario[['CVE_ENT', 'NOM_ENT', 'CVE_MUN', 'NOM_MUN', 'KEY_prod']]
+    diccionario['CVE_ENT'] = diccionario['CVE_ENT'].astype(str)
+    diccionario['CVE_MUN'] = diccionario['CVE_MUN'].astype(str)
+    print(diccionario['CVE_ENT'].unique())
 
     save_to_csv(diccionario, 'data/merged_dataset.csv')
 
@@ -143,19 +148,24 @@ def main():
 
     diccionario_Sin_VC = diccionario[diccionario["NOM_ENT"] != "Veracruz de Ignacio de la Llave"]
 
-    print(listado_productores.columns)
-
-    diccionario_manipulado = pd.read_csv('data/Diccionario_manual.csv')
+    diccionario_manipulado = pd.read_csv('data/Diccionario_manual.csv', encoding='cp1252')
 
     # Hacer el join
-    listado_productores_complete = pd.merge(listado_productores, diccionario_manipulado, left_on="Estado-mun-KEY",
+    listado_productores_complete = pd.merge(listado_productores, diccionario, left_on="Estado-mun-KEY",
                                         right_on="KEY_prod", how='left', suffixes=('_prod', '_inegi'))
     
-    listado_productores_complete[['CVE_ENT', 'CVE_MUN']] = listado_productores_complete['CVE_MUN_Unique'].str.split('-',expand=True)
+    print(listado_productores['Estado-mun-KEY'].unique())
+    print(diccionario_manipulado['KEY_prod'].unique())
+    print(listado_productores_complete.columns)
+
+    #print(listado_productores_complete['NOM_MUN'].unique())
+
+    
+    #listado_productores_complete[['CVE_ENT', 'CVE_MUN']] = listado_productores_complete['CVE_MUN_Unique'].str.split('-',expand=True)
     listado_productores_complete = listado_productores_complete[
         ['ESTADO', 'MUNICIPIO', 'NOM_MUN', 'NOM_ENT', 'CVE_ENT', 'CVE_MUN', 'ACUSE', 'APELLIDO PATERNO',
-         'APELLIDO MATERNO', 'NOMBRE (S)', 'PAQUETE', 'KEY_inegi']]
-
+         'APELLIDO MATERNO', 'NOMBRE (S)', 'PAQUETE', 'KEY_prod']]
+    print(listado_productores_complete['CVE_ENT'].unique())
     # Los nombres y apellidos paternos y maternos que están vacíos y tengan número de acuse se reemplazarán por 'unknown'
     listado_productores_complete.loc[(listado_productores_complete['APELLIDO PATERNO'].isna()) & (
         listado_productores_complete['ACUSE'].notna()), 'APELLIDO PATERNO'] = 'unknown'
@@ -176,7 +186,7 @@ def main():
     'NOM_ENT': 'str',
     'CVE_MUN': 'str',
     'CVE_ENT': 'str',
-    'KEY_inegi': 'str'
+    'KEY_prod': 'str'
 
     })
 
@@ -192,7 +202,7 @@ def main():
     'NOM_ENT': 'entidad',
     'CVE_MUN': 'cve_mun',
     'CVE_ENT': 'cve_ent',
-    'KEY_inegi': 'key_inegi'
+    'KEY_prod': 'key_prod'
     })
 
     listado_productores_complete = listado_productores_complete.drop(columns=['estado1', 'municipio1'])
@@ -200,8 +210,11 @@ def main():
     listado_productores_complete['id'] = listado_productores_complete.index
 
     # Assuming df is your DataFrame
-    ordered_columns = ['id', 'cve_ent', 'entidad', 'cve_mun', 'municipio', 'acuse', 'apellido_paterno', 'apellido_materno', 'nombre_propio', 'paquete', 'key_inegi']
+    ordered_columns = ['id', 'cve_ent', 'entidad', 'cve_mun', 'municipio', 'acuse', 'apellido_paterno', 'apellido_materno', 'nombre_propio', 'paquete', 'key_prod']
     listado_productores_complete = listado_productores_complete.reindex(columns=ordered_columns)
+    
+    listado_productores_complete['cve_ent'] = listado_productores_complete['cve_ent'].str.zfill(2)
+    listado_productores_complete['cve_mun'] = listado_productores_complete['cve_mun'].str.zfill(3)
 
     save_to_csv(listado_productores_complete, 'data/merged_dataset.csv')
 
