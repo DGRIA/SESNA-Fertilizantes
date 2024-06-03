@@ -10,6 +10,7 @@ import shutil
 logger = logging.getLogger("Fertilizantes")
 logger.setLevel(logging.INFO)
 
+
 def clear_directory(directory):
     for filename in os.listdir(directory):
         file_path = os.path.join(directory, filename)
@@ -21,6 +22,7 @@ def clear_directory(directory):
         except Exception as e:
             print(f'Failed to delete {file_path}. Reason: {e}')
 
+
 def show_intro():
     st.markdown((
         """
@@ -28,27 +30,30 @@ def show_intro():
             El propósito de esta aplicación es la descarga, limpieza y unión de las bases de datos
             publicadas en la siguiente URL: [Programa de Fertilizantes 2023 Listados Autorizados](https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-autorizados).
         """
-        ))
-    
+    ))
+
     st.markdown("<br>", unsafe_allow_html=True)
-    
-    st.image('docs/images/mottum.svg', use_column_width=True)
+    cols = st.columns([1, 1, 1])  # Crear tres columnas
+    cols[1].image('docs/images/mottum.svg', use_column_width=True)  # Colocar la im
+
 
 def start_process():
-    cols_button = st.columns([1,3,1])  # Create three columns for the button
-    if cols_button[1].button('Pulsa para comenzar el proceso de descarga y limpieza de datos.', key='start_process_button'):
+    cols_button = st.columns([1, 3, 1])  # Create three columns for the button
+    if cols_button[1].button('Pulsa para comenzar el proceso de descarga y limpieza de datos.',
+                             key='start_process_button'):
         st.session_state.button_pressed = True
         st.session_state.main_running = True
         main()
 
     st.markdown("<br>", unsafe_allow_html=True)
+    cols = st.columns([1, 1, 1])  # Crear tres columnas
+    cols[1].image('docs/images/mottum.svg', use_column_width=True)  # Colocar la im
 
-    st.image('docs/images/mottum.svg', use_column_width=True)
 
 def show_finished():
     if os.path.exists("data/merged_dataset.csv"):
         st.markdown("<h2 style='text-align: center;'>¡El dataset está listo!</h2>", unsafe_allow_html=True)
-        cols = st.columns([1,2,1])
+        cols = st.columns([1, 2, 1])
         with open("data/merged_dataset.csv", "rb") as file:
             button_clicked = cols[1].download_button(
                 label="Pulsa aquí para descargar el dataset completo.",
@@ -57,13 +62,18 @@ def show_finished():
                 mime="text/csv",
             )
         st.markdown("<br>", unsafe_allow_html=True)
-        st.image('docs/images/mottum.svg', use_column_width=True)
+        cols = st.columns([1, 1, 1])  # Crear tres columnas
+        cols[1].image('docs/images/mottum.svg', use_column_width=True)  # Colocar la im
 
     else:
-        st.markdown("<h2 style='text-align: center;'>Necesitas ejecutar el proceso antes de venir a esta pantalla.</h2>", unsafe_allow_html=True)
+        st.markdown(
+            "<h2 style='text-align: center;'>Necesitas ejecutar el proceso antes de venir a esta pantalla.</h2>",
+            unsafe_allow_html=True)
         st.markdown("<br>", unsafe_allow_html=True)
 
-        st.image('docs/images/mottum.svg', use_column_width=True)
+        cols = st.columns([1, 1, 1])  # Crear tres columnas
+        cols[1].image('docs/images/mottum.svg', use_column_width=True)  # Colocar la im
+
 
 def main():
     if not os.path.exists('data'):
@@ -75,7 +85,8 @@ def main():
 
     clear_directory('data/productores_autorizados')
 
-    with st.spinner('Ejecutando scripts... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado'):
+    with st.spinner(
+            'Ejecutando scripts... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado'):
         logger.info("Inicio de Ejecución")
         scripts = ["src/dataset_download.py", "src/data_cleaning_and_merge.py"]
         progress_bar = st.progress(0)  # Initialize progress bar
@@ -87,7 +98,8 @@ def main():
                 logger.error(f"{script} failed with error:\n{result.stderr}")
                 break
             elif i == len(scripts) - 1:  # After the last script has run
-                st.success("El proceso ha terminado. Por favor, descargue el conjunto de datos en la pestaña 'Proceso terminado'.")
+                st.success(
+                    "El proceso ha terminado. Por favor, descargue el conjunto de datos en la pestaña 'Proceso terminado'.")
             elif i == 0:  # After the first script has run
                 lines = [line for line in result.stdout.split('\n') if line]  # Ignore empty lines
                 try:
@@ -102,7 +114,8 @@ def main():
                         st.write(f"{good_count} datasets se han descargado de forma exitosa.")
                         st.selectbox("URLs de los datasets descargados con éxito:", good_urls)
                     else:
-                        st.write("No se pudo descargar ningún dataset de: https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-autorizados.\n")
+                        st.write(
+                            "No se pudo descargar ningún dataset de: https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-autorizados.\n")
 
                     if failed_count > 0:
                         st.write(f"Falló la descarga de {failed_count} datasets.")
@@ -114,11 +127,11 @@ def main():
                         continue
 
                 except (IndexError, ValueError) as e:
-                        st.error(f"Error parsing output from {script}: {e}")
-                    
+                    st.error(f"Error parsing output from {script}: {e}")
 
                 progress_bar.progress(1)  # Update progress bar to 100%
                 logger.info("Fin de Ejecución")
+
 
 if __name__ == '__main__':
     st.markdown('''
@@ -151,17 +164,17 @@ if __name__ == '__main__':
     )
     # Initialize session state variables
     if 'page' not in st.session_state:
-        st.session_state.page = 'Introduction'
+        st.session_state.page = '1. Introducción'
 
     # Create navigation menu
-    st.session_state.page = st.radio('Process', ['Introduction', 'Start Process', 'Process Finished'])
+    st.session_state.page = st.radio('Process', ['1. Introducción', '2. Descarga y Transformación', '3. Descarga de resultado'])
 
     # Display the selected page
-    if st.session_state.page == 'Introduction':
+    if st.session_state.page == '1. Introducción':
         show_intro()
-    elif st.session_state.page == 'Start Process':
+    elif st.session_state.page == '2. Descarga y Transformación':
         start_process()
-    elif st.session_state.page == 'Process Finished':
+    elif st.session_state.page == '3. Descarga de resultado':
         show_finished()
 
     st.sidebar.markdown("<br>", unsafe_allow_html=True)
@@ -175,7 +188,7 @@ if __name__ == '__main__':
     st.sidebar.markdown(
         """
     - [Link al repositorio](https://github.com/MottumData/SESNA-Fertilizantes)
-    - [Jupyter](http://localhost:8888/tree) (How to master Streamlit for data science)
+    - [Jupyter](http://localhost:8888/lab)
     """
     )
 
@@ -193,4 +206,4 @@ if __name__ == '__main__':
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-   #image_placeholder.image('docs/images/mottum.svg', width=500)
+# image_placeholder.image('docs/images/mottum.svg', width=500)
