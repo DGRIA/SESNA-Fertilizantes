@@ -93,5 +93,5 @@ docker build -t sesna-fertilizantes .
 4. **Levantar el contenedor de Docker**. Ejecute el siguiente comando:
 
 ```bash
-docker run -p 8501:8501 sesna-fertilizantes
+docker run -p 8501:8501 8888:8888 sesna-fertilizantes
 ```
