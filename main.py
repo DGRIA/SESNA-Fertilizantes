@@ -33,8 +33,10 @@ def show_intro():
     ))
 
     st.markdown("<br>", unsafe_allow_html=True)
-    cols = st.columns([1, 1, 1])  # Crear tres columnas
-    cols[1].image('docs/images/mottum.svg', use_column_width=True)  # Colocar la im
+    cols = st.columns([1, 1, 1])  # Create three columns
+    inner_cols = cols[2].columns([1, 1, 1, 1])  # Create two columns inside the middle column
+    inner_cols[0].markdown("<p style='text-align: center; font-family: Comic Sans MS; padding-top: 12px; white-space: nowrap;'>Made with love</p>", unsafe_allow_html=True) # Center the text, change the font, and add padding
+    inner_cols[2].image('docs/images/mottum2.png', use_column_width=True) 
 
 
 def start_process():
@@ -46,9 +48,10 @@ def start_process():
         main()
 
     st.markdown("<br>", unsafe_allow_html=True)
-    cols = st.columns([1, 1, 1])  # Crear tres columnas
-    cols[1].image('docs/images/mottum.svg', use_column_width=True)  # Colocar la im
-
+    cols = st.columns([1, 1, 1])  # Create three columns
+    inner_cols = cols[2].columns([1, 1, 1, 1])  # Create two columns inside the middle column
+    inner_cols[0].markdown("<p style='text-align: center; font-family: Comic Sans MS; padding-top: 12px; white-space: nowrap;'>Made with love</p>", unsafe_allow_html=True) # Center the text, change the font, and add padding
+    inner_cols[2].image('docs/images/mottum2.png', use_column_width=True) 
 
 def show_finished():
     if os.path.exists("data/merged_dataset.csv"):
@@ -62,8 +65,10 @@ def show_finished():
                 mime="text/csv",
             )
         st.markdown("<br>", unsafe_allow_html=True)
-        cols = st.columns([1, 1, 1])  # Crear tres columnas
-        cols[1].image('docs/images/mottum.svg', use_column_width=True)  # Colocar la im
+        cols = st.columns([1, 1, 1])  # Create three columns
+        inner_cols = cols[2].columns([1, 1, 1, 1])  # Create two columns inside the middle column
+        inner_cols[0].markdown("<p style='text-align: center; font-family: Comic Sans MS; padding-top: 12px; white-space: nowrap;'>Made with love</p>", unsafe_allow_html=True) # Center the text, change the font, and add padding
+        inner_cols[2].image('docs/images/mottum2.png', use_column_width=True)  # Colocar la im
 
     else:
         st.markdown(
@@ -86,7 +91,7 @@ def main():
     clear_directory('data/productores_autorizados')
 
     with st.spinner(
-            'Ejecutando scripts... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado'):
+            'Ejecutando scripts... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado!'):
         logger.info("Inicio de Ejecución")
         scripts = ["src/dataset_download.py", "src/data_cleaning_and_merge.py"]
         progress_bar = st.progress(0)  # Initialize progress bar
@@ -167,15 +172,29 @@ if __name__ == '__main__':
         st.session_state.page = '1. Introducción'
 
     # Create navigation menu
-    st.session_state.page = st.radio('Process', ['1. Introducción', '2. Descarga y Transformación', '3. Descarga de resultado'])
+    st.session_state.page = st.radio('Process', ['1. Introducción', '2. Descarga y Transformación', '3. Descarga de los datos estandarizados'])
 
     # Display the selected page
     if st.session_state.page == '1. Introducción':
         show_intro()
     elif st.session_state.page == '2. Descarga y Transformación':
         start_process()
-    elif st.session_state.page == '3. Descarga de resultado':
+    elif st.session_state.page == '3. Descarga de los datos estandarizados':
         show_finished()
+
+    st.markdown(
+    """
+    <style>
+        [data-testid=stSidebar] [data-testid=stImage]{
+            text-align: center;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+        }
+    </style>
+    """, unsafe_allow_html=True
+    )
 
     st.sidebar.markdown("<br>", unsafe_allow_html=True)
 
@@ -198,8 +217,10 @@ if __name__ == '__main__':
         '**Financiado por:**',
         unsafe_allow_html=True
     )
+    cols = st.columns([1, 1, 1]) 
+    
+    st.sidebar.image('docs/images/UNDP2.png', width=100)
 
-    st.sidebar.image('docs/images/UNDP.png', use_column_width=True)
 
     if 'button_pressed' not in st.session_state:
         st.session_state.button_pressed = False
