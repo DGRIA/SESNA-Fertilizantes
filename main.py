@@ -7,6 +7,7 @@ import os
 import shutil
 import pandas as pd
 import base64
+from io import StringIO
 
 # Incluir estas líneas en cada script para registrar los logs
 logger = logging.getLogger("Fertilizantes")
@@ -33,6 +34,29 @@ def show_intro():
             publicadas en la siguiente URL: [Programa de Fertilizantes 2023 Listados Autorizados](https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-autorizados).
         """
     ))
+
+    uploaded_file = st.file_uploader("Choose a file")
+    if uploaded_file is not None:
+        # To read file as bytes:
+        bytes_data = uploaded_file.getvalue()
+        st.write(bytes_data)
+
+        # To convert to a string based IO:
+        stringio = StringIO(uploaded_file.getvalue().decode("cp1252"))
+        st.write(stringio)
+
+        # To read file as string:
+        string_data = stringio.read()
+        st.write(string_data)
+
+        # Check if the file is a CSV (or similar) before trying to read it as a DataFrame
+        if uploaded_file.name.endswith('.csv'):
+            # Reset the StringIO object to the beginning
+            stringio.seek(0)
+            dataframe = pd.read_csv(stringio)
+            dataframe.to_csv('data/' + uploaded_file.name)
+        else:
+            st.write("Uploaded file is not a CSV file.")
 
     st.markdown("<br>", unsafe_allow_html=True)
     cols = st.columns([1, 1, 1])  # Create three columns
