@@ -24,11 +24,20 @@ def clear_directory(directory):
 
 
 def show_intro():
-    st.markdown((
+    if st.session_state.main_page == 'Productores autorizados':
+        st.markdown((
         """
             La siguiente aplicacion ha sido desarrollada para [SESNA](https://www.sesna.gob.mx/).
             El propósito de esta aplicación es la descarga, limpieza y unión de las bases de datos
             publicadas en la siguiente URL: [Programa de Fertilizantes 2023 Listados Autorizados](https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-autorizados).
+        """
+    ))
+    elif st.session_state.main_page == 'Beneficiarios fertilizantes 2023':
+        st.markdown((
+        """
+            La siguiente aplicacion ha sido desarrollada para [SESNA](https://www.sesna.gob.mx/).
+            El propósito de esta aplicación es la descarga, limpieza y unión de las bases de datos
+            publicadas en la siguiente URL: [Programa de Fertilizantes 2023 Beneficiarios Autorizados](https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-autorizados).
         """
     ))
 
@@ -79,6 +88,23 @@ def show_finished():
         cols = st.columns([1, 1, 1])  # Crear tres columnas
         cols[1].image('docs/images/mottum.svg', use_column_width=True)  # Colocar la im
 
+def advanced_analysis():
+    st.markdown("<h2 style='text-align: center;'>Análisis Avanzado</h2>", unsafe_allow_html=True)
+    st.markdown(
+        """
+        Aquí puedes realizar análisis avanzados sobre los datos procesados.
+        """
+    )
+    # Placeholder for advanced analysis code
+    st.write("Próximamente: herramientas de análisis avanzadas.")
+
+def secondary_page_intro():
+    st.markdown("<h2 style='text-align: center;'>Introducción a la Segunda Página</h2>", unsafe_allow_html=True)
+    st.write("Esta es la introducción de la segunda página. Aquí puedes añadir más detalles o instrucciones.")
+
+def secondary_page_process():
+    st.markdown("<h2 style='text-align: center;'>Proceso de la Segunda Página</h2>", unsafe_allow_html=True)
+    st.write("Aquí puedes agregar la lógica del proceso para la segunda página.")
 
 def main():
     if not os.path.exists('data'):
@@ -167,20 +193,33 @@ if __name__ == '__main__':
         para el bienestar.
         """
     )
+
+    st.sidebar.markdown("<br>", unsafe_allow_html=True)
+
     # Initialize session state variables
-    if 'page' not in st.session_state:
-        st.session_state.page = '1. Introducción'
-
-    # Create navigation menu
-    st.session_state.page = st.radio('Process', ['1. Introducción', '2. Descarga y Transformación', '3. Descarga de los datos estandarizados'])
-
-    # Display the selected page
-    if st.session_state.page == '1. Introducción':
-        show_intro()
-    elif st.session_state.page == '2. Descarga y Transformación':
-        start_process()
-    elif st.session_state.page == '3. Descarga de los datos estandarizados':
-        show_finished()
+    if 'main_page' not in st.session_state:
+        st.session_state.main_page = 'Productores autorizados'
+    st.session_state.main_page = st.sidebar.radio('Navegación', ['Productores autorizados', 'Beneficiarios fertilizantes 2023'])
+    if st.session_state.main_page == 'Productores autorizados':
+        if 'sub_page' not in st.session_state:
+            st.session_state.sub_page = '1. Introducción'
+        st.session_state.sub_page = st.radio('Productores autorizados', ['1. Introducción', '2. Descarga y Transformación', '3. Descarga de los datos estandarizados', '4. Análisis Avanzado'])
+        if st.session_state.sub_page == '1. Introducción':
+            show_intro()
+        elif st.session_state.sub_page == '2. Descarga y Transformación':
+            start_process()
+        elif st.session_state.sub_page == '3. Descarga de los datos estandarizados':
+            show_finished()
+        elif st.session_state.sub_page == '4. Análisis Avanzado':
+            advanced_analysis()
+    elif st.session_state.main_page == 'Beneficiarios fertilizantes 2023':
+        if 'second_sub_page' not in st.session_state:
+            st.session_state.second_sub_page = '1. Introducción'
+        st.session_state.second_sub_page = st.radio('Beneficiarios fertilizantes 2023', ['1. Introducción', '2. Proceso'])
+        if st.session_state.second_sub_page == '1. Introducción':
+            show_intro()
+        elif st.session_state.second_sub_page == '2. Proceso':
+            secondary_page_process()
 
     st.markdown(
     """
