@@ -5,6 +5,9 @@ import config
 import sys
 import os
 import shutil
+import pandas as pd
+import base64
+from io import StringIO
 
 # Incluir estas líneas en cada script para registrar los logs
 logger = logging.getLogger("Fertilizantes")
@@ -40,6 +43,29 @@ def show_intro():
             publicadas en la siguiente URL: [Programa de Fertilizantes 2023 Beneficiarios Autorizados](https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-autorizados).
         """
     ))
+
+    uploaded_file = st.file_uploader("Suba el diccionario manual para empezar el proceso.")
+    if uploaded_file is not None:
+        # To read file as bytes:
+        bytes_data = uploaded_file.getvalue()
+        st.write(bytes_data)
+
+        # To convert to a string based IO:
+        stringio = StringIO(uploaded_file.getvalue().decode("cp1252"))
+        st.write(stringio)
+
+        # To read file as string:
+        string_data = stringio.read()
+        st.write(string_data)
+
+        # Check if the file is a CSV (or similar) before trying to read it as a DataFrame
+        if uploaded_file.name.endswith('.csv'):
+            # Reset the StringIO object to the beginning
+            stringio.seek(0)
+            dataframe = pd.read_csv(stringio)
+            dataframe.to_csv('data/' + uploaded_file.name)
+        else:
+            st.write("Uploaded file is not a CSV file.")
 
     st.markdown("<br>", unsafe_allow_html=True)
     cols = st.columns([1, 1, 1])  # Create three columns
@@ -154,6 +180,21 @@ def main():
                     else:
                         st.write("Todos los datasets de la URL han sido descargados de forma exitosa.\n")
 
+                    all_urls = good_urls + failed_urls
+                    statuses = ['TRUE' if url in good_urls else 'FALSE' for url in all_urls]
+                    dataset = pd.DataFrame({
+                        'id': range(1, len(all_urls) + 1),
+                        'url': all_urls,
+                        'estado_de_descarga': statuses
+                    })
+
+                    # Convert the DataFrame to a CSV file
+                    csv = dataset.to_csv(index=False)
+                    b64 = base64.b64encode(csv.encode()).decode()  # some strings <-> bytes conversions necessary here
+                    href = f'<a href="data:file/csv;base64,{b64}" download="dataset.csv">Download CSV File</a>'
+
+                    # Create a download button for the CSV file
+                    st.markdown(href, unsafe_allow_html=True)
                     with st.spinner('Comenzando EDA...'):
                         continue
 
