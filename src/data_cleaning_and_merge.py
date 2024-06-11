@@ -79,8 +79,7 @@ def drop_duplicates(df):
 def save_to_csv(df, filename):
     df.to_csv(filename, index=False)
 
-
-def main():
+def data_cleaning():
     path_dataset_inegi = 'data/dataset_inegi.csv'
     dataset_inegi = pd.read_csv(path_dataset_inegi, encoding='cp1252')
 
@@ -216,8 +215,9 @@ def main():
     listado_productores_complete['cve_ent'] = listado_productores_complete['cve_ent'].str.zfill(2)
     listado_productores_complete['cve_mun'] = listado_productores_complete['cve_mun'].str.zfill(3)
 
-    save_to_csv(listado_productores_complete, 'data/merged_dataset.csv')
+    save_to_csv(listado_productores_complete, 'data/listado_productores_complete2023.csv')
 
-
+def main():
+    data_cleaning()
 if __name__ == "__main__":
     main()

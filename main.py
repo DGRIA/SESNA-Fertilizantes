@@ -8,7 +8,9 @@ import shutil
 import pandas as pd
 import base64
 from io import StringIO
-
+from src.dataset_download import download_datasets
+from src.data_cleaning_and_merge import data_cleaning
+from src.scrape_urls import scrape_urls
 # Incluir estas líneas en cada script para registrar los logs
 logger = logging.getLogger("Fertilizantes")
 logger.setLevel(logging.INFO)
@@ -76,24 +78,21 @@ def show_intro():
     inner_cols[2].image('docs/images/mottum2.png', use_column_width=True) 
 
 def start_process():
-    cols_button = st.columns([1, 3, 1])  # Create three columns for the button
-    if cols_button[1].button('Pulsa para comenzar el proceso de descarga y limpieza de datos.',
-                            key='start_process_button'):
-        st.session_state.button_pressed = True
-        st.session_state.main_running = True
-        main()
+    cols_button = st.columns([1, 3, 1])
+    if cols_button[1].button('Pulsa para comenzar el proceso de descarga y limpieza de datos.', key='start_process_button'):
+        data_cleaning_and_merge()
 
     st.markdown("<br>", unsafe_allow_html=True)
-    cols = st.columns([1, 1, 1])  # Create three columns
-    inner_cols = cols[2].columns([1, 1, 1, 1])  # Create two columns inside the middle column
-    inner_cols[0].markdown("<p style='text-align: center; font-family: Comic Sans MS; padding-top: 12px; white-space: nowrap;'>Made with love</p>", unsafe_allow_html=True) # Center the text, change the font, and add padding
-    inner_cols[2].image('docs/images/mottum2.png', use_column_width=True) 
+    cols = st.columns([1, 1, 1])
+    inner_cols = cols[2].columns([1, 1, 1, 1])
+    inner_cols[0].markdown("<p style='text-align: center; font-family: Comic Sans MS; padding-top: 12px; white-space: nowrap;'>Made with love</p>", unsafe_allow_html=True)
+    inner_cols[2].image('docs/images/mottum2.png', use_column_width=True)
 
 def show_finished():
-    if os.path.exists("data/merged_dataset.csv"):
+    if os.path.exists("data/listado_productores_complete2023.csv"):
         st.markdown("<h2 style='text-align: center;'>¡El dataset está listo!</h2>", unsafe_allow_html=True)
         cols = st.columns([1, 2, 1])
-        with open("data/merged_dataset.csv", "rb") as file:
+        with open("data/listado_productores_complete2023.csv", "rb") as file:
             button_clicked = cols[1].download_button(
                 label="Pulsa aquí para descargar el dataset completo.",
                 data=file,
@@ -115,78 +114,70 @@ def show_finished():
         cols = st.columns([1, 1, 1])  # Crear tres columnas
         cols[1].image('docs/images/mottum.svg', use_column_width=True)  # Colocar la im
 
-def main():
-    if st.session_state.main_page == 'Productores autorizados':
-        if not os.path.exists('data'):
+def data_cleaning_and_merge():
+    if not os.path.exists('data'):
             os.makedirs('data')
             print("Directory 'data' missing, creating data directory.")
-        if not os.path.exists('data/productores_autorizados'):
-            os.makedirs('data/productores_autorizados')
-            print("Directory 'data/productores_autorizados' missing, creating data/productores_autorizados.")
+    if not os.path.exists('data/productores_autorizados'):
+        os.makedirs('data/productores_autorizados')
+        print("Directory 'data/productores_autorizados' missing, creating data/productores_autorizados.")
 
-        clear_directory('data/productores_autorizados')
+    clear_directory('data/productores_autorizados')
+    with st.spinner(
+            'Ejecutando scripts... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado!'
+        ):
+        progress_bar = st.progress(0)
+        download_urls = []
+        url = "https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-autorizados"
+        urls = scrape_urls(url)
+        progress_bar.progress(0.33)
+        for url in urls:
+            download_urls.append(url)
+        download_destination_folder = "data/productores_autorizados"
+        result = download_datasets(download_urls, download_destination_folder)
+        progress_bar.progress(0.66)
 
-        with st.spinner(
-                'Ejecutando scripts... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado!'):
-            logger.info("Inicio de Ejecución")
-            scripts = ["src/dataset_download.py", "src/data_cleaning_and_merge.py"]
-            progress_bar = st.progress(0)  # Initialize progress bar
-            for i, script in enumerate(scripts):
-                result = subprocess.run([sys.executable, script], check=False, text=True, capture_output=True)
-                progress_percent = (i + 1) / len(scripts)  # Calculate progress percentage
-                progress_bar.progress(progress_percent)  # Update progress bar
-                if result.returncode != 0:
-                    logger.error(f"{script} failed with error:\n{result.stderr}")
-                    break
-                elif i == len(scripts) - 1:  # After the last script has run
-                    st.success(
-                        "El proceso ha terminado. Por favor, descargue el conjunto de datos en la pestaña 'Proceso terminado'.")
-                elif i == 0:  # After the first script has run
-                    lines = [line for line in result.stdout.split('\n') if line]  # Ignore empty lines
-                    try:
-                        # Extract the section with the download results
-                        start_index = lines.index("====DOWNLOAD RESULTS====") + 1
-                        failed_count = int(lines[start_index])
-                        failed_urls = lines[start_index + 1].split(',')
-                        good_count = int(lines[start_index + 2])
-                        good_urls = lines[start_index + 3].split(',')
+        good_count = result['good_count']
+        good_urls = result['good_urls']
+        failed_count = result['failed_count']
+        failed_urls = result['failed_urls']
 
-                        if good_count > 0:
-                            st.write(f"{good_count} datasets se han descargado de forma exitosa.")
-                            st.selectbox("URLs de los datasets descargados con éxito:", good_urls)
-                        else:
-                            st.write(
-                                "No se pudo descargar ningún dataset de: https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-autorizados.\n")
+        if good_count > 0:
+            st.write(f"{good_count} datasets se han descargado de forma exitosa.")
+            st.selectbox("URLs de los datasets descargados con éxito:", good_urls)
+        else:
+            st.write(
+                "No se pudo descargar ningún dataset de: https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-autorizados.\n")
 
-                        if failed_count > 0:
-                            st.write(f"Falló la descarga de {failed_count} datasets.")
-                            st.selectbox("URLs de los datasets que fallaron al descargar:", failed_urls)
-                        else:
-                            st.write("Todos los datasets de la URL han sido descargados de forma exitosa.\n")
+        if failed_count > 0:
+            st.write(f"Falló la descarga de {failed_count} datasets.")
+            st.selectbox("URLs de los datasets que fallaron al descargar:", failed_urls)
+        else:
+            st.write("Todos los datasets de la URL han sido descargados de forma exitosa.\n")
 
-                        all_urls = good_urls + failed_urls
-                        statuses = ['TRUE' if url in good_urls else 'FALSE' for url in all_urls]
-                        dataset = pd.DataFrame({
-                            'id': range(1, len(all_urls) + 1),
-                            'url': all_urls,
-                            'estado_de_descarga': statuses
-                        })
+        all_urls = good_urls + failed_urls
+        statuses = ['TRUE' if url in good_urls else 'FALSE' for url in all_urls]
+        dataset = pd.DataFrame({
+            'id': range(1, len(all_urls) + 1),
+            'url': all_urls,
+            'estado_de_descarga': statuses
+        })
 
-                        # Convert the DataFrame to a CSV file
-                        csv = dataset.to_csv(index=False)
-                        b64 = base64.b64encode(csv.encode()).decode()  # some strings <-> bytes conversions necessary here
-                        href = f'<a href="data:file/csv;base64,{b64}" download="dataset.csv">Download CSV File</a>'
+        # Convert the DataFrame to a CSV file
+        csv = dataset.to_csv(index=False)
+        b64 = base64.b64encode(csv.encode()).decode()  # some strings <-> bytes conversions necessary here
+        href = f'<a href="data:file/csv;base64,{b64}" download="dataset.csv">Download CSV File</a>'
 
-                        # Create a download button for the CSV file
-                        st.markdown(href, unsafe_allow_html=True)
-                        with st.spinner('Comenzando EDA...'):
-                            continue
+        # Create a download button for the CSV file
+        st.markdown(href, unsafe_allow_html=True)
 
-                    except (IndexError, ValueError) as e:
-                        st.error(f"Error parsing output from {script}: {e}")
+        data_cleaning()
 
-                    progress_bar.progress(1)  # Update progress bar to 100%
-                    logger.info("Fin de Ejecución")
+        progress_bar.progress(1)  # Update progress bar to 100%
+        logger.info("Fin de Ejecución")
+        st.success(
+            "El proceso de descarga ha terminado. Ahora procederemos con la transformación y carga de los datos."
+        )
 
 if __name__ == '__main__':
     st.markdown('''
