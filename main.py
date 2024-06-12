@@ -19,6 +19,8 @@ logger.setLevel(logging.INFO)
 
 def clear_directory(directory):
     for filename in os.listdir(directory):
+        if filename == '.gitkeep':  # Skip the .gitkeep file
+            continue
         file_path = os.path.join(directory, filename)
         try:
             if os.path.isfile(file_path) or os.path.islink(file_path):
@@ -87,7 +89,7 @@ def show_intro():
 
 def start_process():
     if st.session_state.main_page == 'Productores autorizados 2023':
-        cols_button = st.columns([1, 3, 1])
+        cols_button = st.columns([1, 1, 1])
         if cols_button[1].button('Descargar Listado Autorizados2023.', key='start_process_button'):
             data_download("https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-autorizados",  "data/productores_autorizados")
         st.markdown("<br>", unsafe_allow_html=True)
@@ -96,7 +98,7 @@ def start_process():
         inner_cols[0].markdown("<p style='text-align: center; font-family: Comic Sans MS; padding-top: 12px; white-space: nowrap;'>Made with love</p>", unsafe_allow_html=True)
         inner_cols[2].image('docs/images/mottum2.png', use_column_width=True)
     elif st.session_state.main_page == 'Beneficiarios fertilizantes 2023':
-        cols_button = st.columns([1, 3, 1])
+        cols_button = st.columns([1, 1, 1])
         if cols_button[1].button('Descargar Listado Beneficiarios2023.', key='start_process_button'):
             data_download("https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-de-beneficiarios",  "data/productores_beneficiarios")
         st.markdown("<br>", unsafe_allow_html=True)
@@ -124,11 +126,11 @@ def data_download(url, download_destination_folder):
         progress_bar = st.progress(0)
         download_urls = []
         urls = scrape_urls(url)
-        progress_bar.progress(0.33)
+        progress_bar.progress(1/3)
         for url in urls:
             download_urls.append(url)
         result = download_datasets(download_urls, download_destination_folder)
-        progress_bar.progress(0.66)
+        progress_bar.progress(1)
 
         good_count = result['good_count']
         good_urls = result['good_urls']
@@ -163,8 +165,7 @@ def data_download(url, download_destination_folder):
 
         # Create a download button for the CSV file
         st.markdown(href, unsafe_allow_html=True)
-
-        progress_bar.progress(1)  # Update progress bar to 100%
+        
         logger.info("Fin de Ejecución")
         st.success(
             "El proceso de descarga ha terminado. En la siguiente pestaña puede proceder con la limpieza de los datos."
@@ -181,7 +182,7 @@ def clean_data_screen():
         with st.spinner(
             'Ejecutando scripts... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado!'
         ):
-            cols_button = st.columns([1, 3, 1])
+            cols_button = st.columns([1, 1, 1])
             if cols_button[1].button('Limpieza de datos de Listado Productores2023.', key='start_process_button'):
                 data_cleaning_function('productores_autorizados_2023')
             st.markdown("<br>", unsafe_allow_html=True)
@@ -193,7 +194,7 @@ def clean_data_screen():
         with st.spinner(
             'Ejecutando scripts... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado!'
         ):
-            cols_button = st.columns([1, 3, 1])
+            cols_button = st.columns([1, 1, 1])
             if cols_button[1].button('Limpieza de datos de Listado Beneficiarios2023.', key='start_process_button'):
                 data_cleaning_function('beneficiarios_fertilizantes_2023')
             st.markdown("<br>", unsafe_allow_html=True)
@@ -219,6 +220,14 @@ def show_finished():
             inner_cols = cols[2].columns([1, 1, 1, 1])  # Create two columns inside the middle column
             inner_cols[0].markdown("<p style='text-align: center; font-family: Comic Sans MS; padding-top: 12px; white-space: nowrap;'>Made with love</p>", unsafe_allow_html=True) # Center the text, change the font, and add padding
             inner_cols[2].image('docs/images/mottum2.png', use_column_width=True)
+        else:
+                st.markdown(
+                    "<h2 style='text-align: center;'>Necesitas ejecutar el proceso antes de venir a esta pantalla.</h2>",
+                    unsafe_allow_html=True)
+                st.markdown("<br>", unsafe_allow_html=True)
+
+                cols = st.columns([1, 1, 1])  # Crear tres columnas
+                cols[1].image('docs/images/mottum.svg', use_column_width=True)  # Colocar la imagen en la columna del medio
     elif st.session_state.main_page == 'Beneficiarios fertilizantes 2023':
         if os.path.exists("data/LISTADO_BENEFICIARIOS2023_COMPLETO.csv"):
             st.markdown("<h2 style='text-align: center;'>¡El dataset está listo!</h2>", unsafe_allow_html=True)
@@ -236,14 +245,14 @@ def show_finished():
             inner_cols[0].markdown("<p style='text-align: center; font-family: Comic Sans MS; padding-top: 12px; white-space: nowrap;'>Made with love</p>", unsafe_allow_html=True) # Center the text, change the font, and add padding
             inner_cols[2].image('docs/images/mottum2.png', use_column_width=True)
 
-    else:
-        st.markdown(
-            "<h2 style='text-align: center;'>Necesitas ejecutar el proceso antes de venir a esta pantalla.</h2>",
-            unsafe_allow_html=True)
-        st.markdown("<br>", unsafe_allow_html=True)
+        else:
+            st.markdown(
+                "<h2 style='text-align: center;'>Necesitas ejecutar el proceso antes de venir a esta pantalla.</h2>",
+                unsafe_allow_html=True)
+            st.markdown("<br>", unsafe_allow_html=True)
 
-        cols = st.columns([1, 1, 1])  # Crear tres columnas
-        cols[1].image('docs/images/mottum.svg', use_column_width=True)  # Colocar la im
+            cols = st.columns([1, 1, 1])  # Crear tres columnas
+            cols[1].image('docs/images/mottum.svg', use_column_width=True)  # Colocar la imagen en la columna del medio
 
 
 if __name__ == '__main__':
