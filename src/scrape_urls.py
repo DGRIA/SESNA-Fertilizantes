@@ -13,10 +13,11 @@ def scrape_urls(url):
 
     return urls
 
-# Example usage:
+'''
 url = "https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-autorizados"
 count = 0
 urls = scrape_urls(url)
 for url in urls:
     print(url)
     print(count)
+'''

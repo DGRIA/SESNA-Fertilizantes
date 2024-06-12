@@ -1,5 +1,5 @@
 import requests
-import scrape_urls
+from src import scrape_urls
 
 def download_datasets(urls, destination_folder):
     failed_urls = []
@@ -26,7 +26,15 @@ def download_datasets(urls, destination_folder):
     print(",".join(failed_urls))
     print(good_count)
     print(",".join(good_urls))
+    
+    return {
+        'good_count': len(good_urls),
+        'good_urls': good_urls,
+        'failed_count': len(failed_urls),
+        'failed_urls': failed_urls
+    }
 # Example usage:
+'''
 download_urls = []
 url = "https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-autorizados"
 urls = scrape_urls.scrape_urls(url)
@@ -35,3 +43,4 @@ for url in urls:
 
 download_destination_folder = "data/productores_autorizados"
 download_datasets(download_urls, download_destination_folder)
+'''
