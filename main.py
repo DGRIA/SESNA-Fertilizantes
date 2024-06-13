@@ -16,6 +16,31 @@ from streamlit_option_menu import option_menu as om
 logger = logging.getLogger("Fertilizantes")
 logger.setLevel(logging.INFO)
 
+def session_state_with_love_mottum(unique_id):
+    # Construct a unique session state key based on the provided unique_id
+    key = f'love_mottum_displayed_{unique_id}'
+
+    # Check if this unique key is in the session state and initialize it if not
+    if key not in st.session_state:
+        st.session_state[key] = False
+
+    # Always check the session state and display the motto if it has been shown before
+    # This ensures the motto remains visible across all page navigations
+    if st.session_state[key]:
+        display_love_mottum()
+    else:
+        # The first time the motto is to be displayed, set the session state to True
+        display_love_mottum()
+        st.session_state[key] = True
+
+def display_love_mottum():
+    """Displays the 'Made with love' motto and logo."""
+    st.markdown("<br>", unsafe_allow_html=True)
+    cols = st.columns([1, 1, 1])  # Create three columns
+    inner_cols = cols[2].columns([1, 1, 1, 1])  # Create four columns inside the third main column
+    inner_cols[0].markdown("<p style='text-align: center; font-family: Manrope; padding-top: 12px; white-space: nowrap;'>Made with love</p>", unsafe_allow_html=True)  # Center the text, change the font, and add padding
+    inner_cols[2].image('docs/images/mottum2.png', use_column_width=True)
+
 
 def clear_directory(directory):
     for filename in os.listdir(directory):
@@ -60,54 +85,34 @@ def show_intro():
 
     uploaded_file = st.file_uploader("Suba el diccionario manual para empezar el proceso.")
     if uploaded_file is not None:
-        # To read file as bytes:
-        bytes_data = uploaded_file.getvalue()
-        st.write(bytes_data)
-
-        # To convert to a string based IO:
-        stringio = StringIO(uploaded_file.getvalue().decode("cp1252"))
-        st.write(stringio)
-
-        # To read file as string:
-        string_data = stringio.read()
-        st.write(string_data)
-
         # Check if the file is a CSV (or similar) before trying to read it as a DataFrame
         if uploaded_file.name.endswith('.csv'):
+
+            # To convert to a string based IO:
+            stringio = StringIO(uploaded_file.getvalue().decode("cp1252"))
             # Reset the StringIO object to the beginning
             stringio.seek(0)
             dataframe = pd.read_csv(stringio)
             dataframe.to_csv(os.path.join('data', uploaded_file.name))
+            st.success(f"El archivo {uploaded_file.name} ha sido subido con éxito.")
         else:
-            st.write("Uploaded file is not a CSV file.")
+            st.error("¡El archivo tiene que ser un .csv para continuar con el proceso!")
 
-    st.markdown("<br>", unsafe_allow_html=True)
-    cols = st.columns([1, 1, 1])  # Create three columns
-    inner_cols = cols[2].columns([1, 1, 1, 1])  # Create two columns inside the middle column
-    inner_cols[0].markdown("<p style='text-align: center; font-family: Comic Sans MS; padding-top: 12px; white-space: nowrap;'>Made with love</p>", unsafe_allow_html=True) # Center the text, change the font, and add padding
-    inner_cols[2].image('docs/images/mottum2.png', use_column_width=True) 
+    session_state_with_love_mottum('footer')
 
 def start_process():
     if st.session_state.main_page == 'Productores autorizados 2023':
         cols_button = st.columns([1, 1, 1])
         if cols_button[1].button('Descargar Listado Autorizados2023.', key='start_process_button'):
             data_download("https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-autorizados",  "data/productores_autorizados")
-        st.markdown("<br>", unsafe_allow_html=True)
-        cols = st.columns([1, 1, 1])
-        inner_cols = cols[2].columns([1, 1, 1, 1])
-        inner_cols[0].markdown("<p style='text-align: center; font-family: Comic Sans MS; padding-top: 12px; white-space: nowrap;'>Made with love</p>", unsafe_allow_html=True)
-        inner_cols[2].image('docs/images/mottum2.png', use_column_width=True)
+        session_state_with_love_mottum('footer1')
     elif st.session_state.main_page == 'Beneficiarios fertilizantes 2023':
         cols_button = st.columns([1, 1, 1])
         if cols_button[1].button('Descargar Listado Beneficiarios2023.', key='start_process_button'):
             data_download("https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-de-beneficiarios",  "data/productores_beneficiarios")
-        st.markdown("<br>", unsafe_allow_html=True)
-        cols = st.columns([1, 1, 1])
-        inner_cols = cols[2].columns([1, 1, 1, 1])
-        inner_cols[0].markdown("<p style='text-align: center; font-family: Comic Sans MS; padding-top: 12px; white-space: nowrap;'>Made with love</p>", unsafe_allow_html=True)
-        inner_cols[2].image('docs/images/mottum2.png', use_column_width=True)
+        session_state_with_love_mottum('footer2')
 
-def data_download(url, download_destination_folder):
+def data_download(url, download_destination_folder, progress_callback=None): # Exit the function if any required file is missing
     if not os.path.exists('data'):
             os.makedirs('data')
             print("Directory 'data' missing, creating data directory.")
@@ -115,22 +120,26 @@ def data_download(url, download_destination_folder):
         os.makedirs('data/productores_autorizados')
         print("Directory 'data/productores_autorizados' missing, creating data/productores_autorizados.")
     if not os.path.exists('data/productores_beneficiarios'):
-        os.makedirs('data/productores_autorizados')
-        print("Directory 'data/productores_autorizados' missing, creating data/productores_autorizados.")
+        os.makedirs('data/productores_beneficiarios')
+        print("Directory 'data/productores_beneficiarios' missing, creating data/productores_beneficiarios.")
 
     clear_directory('data/productores_autorizados')
     clear_directory('data/productores_beneficiarios')
-    with st.spinner(
-            'Ejecutando scripts... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado!'
-        ):
+
+    with st.spinner('Ejecutando scripts... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado!'):
+        download_urls = scrape_urls(url)  # Correctly initialize the progress bar with 0%
+        # Calculate each step's progress increment based on the number of URLs
         progress_bar = st.progress(0)
-        download_urls = []
-        urls = scrape_urls(url)
-        progress_bar.progress(1/3)
-        for url in urls:
-            download_urls.append(url)
-        result = download_datasets(download_urls, download_destination_folder)
-        progress_bar.progress(1)
+
+        # Define the progress callback function
+        def progress_callback(progress):
+            progress_bar.progress(progress)
+
+        # Call download_datasets with the progress callback
+        result = download_datasets(download_urls, download_destination_folder, progress_callback)
+
+        # Update progress to 100% after download_datasets completes
+        # Explicitly set progress to 100% after all processing
 
         good_count = result['good_count']
         good_urls = result['good_urls']
@@ -171,79 +180,141 @@ def data_download(url, download_destination_folder):
             "El proceso de descarga ha terminado. En la siguiente pestaña puede proceder con la limpieza de los datos."
         )
 
-    st.markdown("<br>", unsafe_allow_html=True)
-    cols = st.columns([1, 1, 1])  # Create three columns
-    inner_cols = cols[2].columns([1, 1, 1, 1])  # Create two columns inside the middle column
-    inner_cols[0].markdown("<p style='text-align: center; font-family: Comic Sans MS; padding-top: 12px; white-space: nowrap;'>Made with love</p>", unsafe_allow_html=True) # Center the text, change the font, and add padding
-    inner_cols[2].image('docs/images/mottum2.png', use_column_width=True)
+    session_state_with_love_mottum('footer3')
 
 def clean_data_screen():
     if st.session_state.main_page == 'Productores autorizados 2023':
+        required_files = [
+            'data/dataset_inegi.csv',
+            'data/Diccionario_manual.csv'
+        ]
         with st.spinner(
             'Ejecutando scripts... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado!'
         ):
             cols_button = st.columns([1, 1, 1])
             if cols_button[1].button('Limpieza de datos de Listado Productores2023.', key='start_process_button'):
                 data_cleaning_function('productores_autorizados_2023')
-            st.markdown("<br>", unsafe_allow_html=True)
-            cols = st.columns([1, 1, 1])
-            inner_cols = cols[2].columns([1, 1, 1, 1])
-            inner_cols[0].markdown("<p style='text-align: center; font-family: Comic Sans MS; padding-top: 12px; white-space: nowrap;'>Made with love</p>", unsafe_allow_html=True)
-            inner_cols[2].image('docs/images/mottum2.png', use_column_width=True)
+                st.success("El proceso de limpieza de datos ha terminado. En la siguiente pestaña puede proceder con la descarga de los datos estandarizados.")
+            session_state_with_love_mottum('footer4')
     elif st.session_state.main_page == 'Beneficiarios fertilizantes 2023':
+        required_files = [
+            'data/dataset_inegi.csv',
+            'data/Diccionario_Simple.csv'
+        ]
         with st.spinner(
             'Ejecutando scripts... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado!'
         ):
             cols_button = st.columns([1, 1, 1])
             if cols_button[1].button('Limpieza de datos de Listado Beneficiarios2023.', key='start_process_button'):
                 data_cleaning_function('beneficiarios_fertilizantes_2023')
-            st.markdown("<br>", unsafe_allow_html=True)
-            cols = st.columns([1, 1, 1])
-            inner_cols = cols[2].columns([1, 1, 1, 1])
-            inner_cols[0].markdown("<p style='text-align: center; font-family: Comic Sans MS; padding-top: 12px; white-space: nowrap;'>Made with love</p>", unsafe_allow_html=True)
-            inner_cols[2].image('docs/images/mottum2.png', use_column_width=True)
+                st.success("El proceso de limpieza de datos ha terminado. En la siguiente pestaña puede proceder con la descarga de los datos estandarizados.")
+            session_state_with_love_mottum('footer5')
+
+    missing_files = [file for file in required_files if not os.path.exists(file)]
+    
+    if missing_files:
+        # Display an error message for each missing file
+        for missing_file in missing_files:
+            st.error(f"Error: El archivo requerido {missing_file} no ha sido subido todavía, vuelva a la introducción y súbalo desde ahi.")
+        return  
 
 def show_finished():
     if st.session_state.main_page == 'Productores autorizados 2023':
-        if os.path.exists("data/listado_productores_complete2023.csv"):
-            st.markdown("<h2 style='text-align: center;'>¡El dataset está listo!</h2>", unsafe_allow_html=True)
+        dataset_path = "data/listado_productores_complete2023.csv"
+        if os.path.exists(dataset_path):
+            st.markdown("""
+            <style>
+            .centered {
+                text-align: center;
+                font-size: 20px; /* Adjust the size as needed */
+                font-weight: bold; /* Makes the text bold */
+                /* Add more styling as needed */
+            }
+            </style>
+            <div class="centered">¡El dataset está listo!</div>
+            """, unsafe_allow_html=True)
+            # Load dataset to calculate statistics
+            df = pd.read_csv(dataset_path)
+            # Calculate statistics
+            stats = {
+                'Número de filas': [df.shape[0]],
+                'Número de columnas': [df.shape[1]],
+                # Add more statistics here if needed
+            }
+            stats_df = pd.DataFrame(stats)
+            # Display statistics
+            st.markdown("""
+            <style>
+            .centered {
+                font-size: 15px; /* Adjust the size as needed */
+                font-weight: bold; /* Makes the text bold */
+                /* Add more styling as needed */
+            }
+            </style>
+            <div class="centered">Final dataset</div>
+            """, unsafe_allow_html=True)
+
+            st.table(stats_df)
+            
             cols = st.columns([1, 2, 1])
-            with open("data/listado_productores_complete2023.csv", "rb") as file:
-                button_clicked = cols[1].download_button(
-                    label="Pulsa aquí para descargar el dataset completo.",
+            with open(dataset_path, "rb") as file:
+                cols[1].download_button(
+                    label="Pulsa para acceder al dataset completo.",
                     data=file,
                     file_name="listado_productores_completo2023.csv",
                     mime="text/csv",
                 )
-            st.markdown("<br>", unsafe_allow_html=True)
-            cols = st.columns([1, 1, 1])  # Create three columns
-            inner_cols = cols[2].columns([1, 1, 1, 1])  # Create two columns inside the middle column
-            inner_cols[0].markdown("<p style='text-align: center; font-family: Comic Sans MS; padding-top: 12px; white-space: nowrap;'>Made with love</p>", unsafe_allow_html=True) # Center the text, change the font, and add padding
-            inner_cols[2].image('docs/images/mottum2.png', use_column_width=True)
+            session_state_with_love_mottum('footer6')
         else:
-                st.markdown(
-                    "<h2 style='text-align: center;'>Necesitas ejecutar el proceso antes de venir a esta pantalla.</h2>",
-                    unsafe_allow_html=True)
-                st.markdown("<br>", unsafe_allow_html=True)
+            st.error("¡Necesitas ejecutar el proceso antes de venir a esta pantalla!")
+            session_state_with_love_mottum('footer7')
 
-                cols = st.columns([1, 1, 1])  # Crear tres columnas
-                cols[1].image('docs/images/mottum.svg', use_column_width=True)  # Colocar la imagen en la columna del medio
     elif st.session_state.main_page == 'Beneficiarios fertilizantes 2023':
-        if os.path.exists("data/LISTADO_BENEFICIARIOS2023_COMPLETO.csv"):
-            st.markdown("<h2 style='text-align: center;'>¡El dataset está listo!</h2>", unsafe_allow_html=True)
+        dataset_path = "data/LISTADO_BENEFICIARIOS2023_COMPLETO.csv"
+        if os.path.exists(dataset_path):
+            st.markdown("""
+            <style>
+            .centered {
+                text-align: center;
+                font-size: 20px; /* Adjust the size as needed */
+                font-weight: bold; /* Makes the text bold */
+                /* Add more styling as needed */
+            }
+            </style>
+            <div class="centered">¡El dataset está listo!</div>
+            """, unsafe_allow_html=True)
+            # Load dataset to calculate statistics
+            df = pd.read_csv(dataset_path)
+            # Calculate statistics
+            stats = {
+                'Número de filas': [df.shape[0]],
+                'Número de columnas': [df.shape[1]],
+                # Add more statistics here if needed
+            }
+            stats_df = pd.DataFrame(stats)
+            # Display statistics
+            st.markdown("""
+            <style>
+            .centered {
+                font-size: 15px; /* Adjust the size as needed */
+                font-weight: bold; /* Makes the text bold */
+                /* Add more styling as needed */
+            }
+            </style>
+            <div class="centered">Final dataset</div>
+            """, unsafe_allow_html=True)
+            st.markdown("<br>", unsafe_allow_html=True)
+            st.table(stats_df)
+            
             cols = st.columns([1, 2, 1])
-            with open("data/LISTADO_BENEFICIARIOS2023_COMPLETO.csv", "rb") as file:
-                button_clicked = cols[1].download_button(
-                    label="Pulsa aquí para descargar el dataset completo.",
+            with open(dataset_path, "rb") as file:
+                cols[1].download_button(
+                    label="Pulsa aquí para acceder al dataset completo.",
                     data=file,
                     file_name="LISTADO_BENEFICIARIOS2023_COMPLETO.csv",
                     mime="text/csv",
                 )
-            st.markdown("<br>", unsafe_allow_html=True)
-            cols = st.columns([1, 1, 1])  # Create three columns
-            inner_cols = cols[2].columns([1, 1, 1, 1])  # Create two columns inside the middle column
-            inner_cols[0].markdown("<p style='text-align: center; font-family: Comic Sans MS; padding-top: 12px; white-space: nowrap;'>Made with love</p>", unsafe_allow_html=True) # Center the text, change the font, and add padding
-            inner_cols[2].image('docs/images/mottum2.png', use_column_width=True)
+            session_state_with_love_mottum('footer8')
 
         else:
             st.markdown(
@@ -251,8 +322,8 @@ def show_finished():
                 unsafe_allow_html=True)
             st.markdown("<br>", unsafe_allow_html=True)
 
-            cols = st.columns([1, 1, 1])  # Crear tres columnas
-            cols[1].image('docs/images/mottum.svg', use_column_width=True)  # Colocar la imagen en la columna del medio
+            cols = st.columns([1, 1, 1])
+            cols[1].image('docs/images/mottum.svg', use_column_width=True)# Colocar la imagen en la columna del medio
 
 
 if __name__ == '__main__':
@@ -276,26 +347,26 @@ if __name__ == '__main__':
     if st.session_state.main_page == 'Productores autorizados 2023':
         if 'sub_page' not in st.session_state:
             st.session_state.sub_page = '1. Introducción'
-        st.session_state.sub_page = st.radio('Productores autorizados 2023', ['1. Introducción', '2. Descarga y Transformación', '3. Limpieza de datos', '4. Descarga de los datos estandarizados'])
+        st.session_state.sub_page = st.radio('Productores autorizados 2023', ['1. Introducción', '2. Descarga y Transformación', '3. Limpieza de datos', '4. Acceso a las tablas de resultados [.csv]'])
         if st.session_state.sub_page == '1. Introducción':
             show_intro()
         elif st.session_state.sub_page == '2. Descarga y Transformación':
             start_process()
         elif st.session_state.sub_page == '3. Limpieza de datos':
             clean_data_screen()
-        elif st.session_state.sub_page == '4. Descarga de los datos estandarizados':
+        elif st.session_state.sub_page == '4. Acceso a las tablas de resultados [.csv]':
             show_finished()
     elif st.session_state.main_page == 'Beneficiarios fertilizantes 2023':
         if 'second_sub_page' not in st.session_state:
             st.session_state.second_sub_page = '1. Introducción'
-        st.session_state.second_sub_page = st.radio('Beneficiarios fertilizantes 2023', ['1. Introducción', '2. Descarga y Transformación', '3. Limpieza de datos', '4. Descarga de los datos estandarizados'])
+        st.session_state.second_sub_page = st.radio('Beneficiarios fertilizantes 2023', ['1. Introducción', '2. Descarga y Transformación', '3. Limpieza de datos', '4. Acceso a las tablas de resultados [.csv]'])
         if st.session_state.second_sub_page == '1. Introducción':
             show_intro()
         elif st.session_state.second_sub_page == '2. Descarga y Transformación':
             start_process()
         elif st.session_state.second_sub_page == '3. Limpieza de datos':
             clean_data_screen()
-        elif st.session_state.second_sub_page == '4. Descarga de los datos estandarizados':
+        elif st.session_state.second_sub_page == '4. Acceso a las tablas de resultados [.csv]':
             show_finished()
 
     st.sidebar.markdown(

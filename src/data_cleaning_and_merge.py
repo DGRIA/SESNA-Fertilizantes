@@ -19,10 +19,17 @@ def load_datasets(directory):
     # Read each CSV file and store the DataFrame in a list
     dataframes = [pd.read_csv(file, encoding='cp1252', index_col=0, skiprows=1) for file in csv_files]
 
+    # Print the number of rows for each DataFrame
+    for i, df in enumerate(dataframes):
+        print(f"Number of rows in DataFrame {i+1}: {df.shape[0]}")
+
+    # Calculate the sum of rows in each individual dataset
+    individual_row_sum = sum([df.shape[0] for df in dataframes])
+
     # Concatenate all DataFrames in the list
     merged_df = pd.concat(dataframes, join='inner', ignore_index=True)
 
-    return merged_df
+    return merged_df, individual_row_sum
 
 
 def clean_text(text):
@@ -160,7 +167,16 @@ def data_cleaning():
     path_dataset_inegi = 'data/dataset_inegi.csv'
     dataset_inegi = pd.read_csv(path_dataset_inegi, encoding='cp1252')
 
-    listado_productores = load_datasets('data/productores_autorizados/')
+    listado_productores, rowSum = load_datasets('data/productores_autorizados/')
+
+    stats = {
+        'Número de filas': [listado_productores.shape[0]],
+        'Número de columnas': [listado_productores.shape[1]],
+        # Add more statistics here if needed
+    }
+    stats_df = pd.DataFrame(stats)
+
+    stats_df.to_csv('data/stats_iniciales_productores.csv', index=False)
 
     dataset_inegi_clean = clean_inegi_data(dataset_inegi)
 
@@ -252,7 +268,7 @@ def data_cleaning2():
     path_dataset_inegi = 'data/dataset_inegi.csv'
     dataset_inegi = pd.read_csv(path_dataset_inegi, encoding='cp1252')
 
-    listado_beneficiarios = load_datasets('data/productores_beneficiarios')
+    listado_beneficiarios, rowSum = load_datasets('data/productores_beneficiarios')
 
     dataset_inegi_clean = clean_inegi_data(dataset_inegi)
 
@@ -283,7 +299,7 @@ def data_cleaning2():
 
     diccionario_verificado_simple = pd.read_csv('data/Diccionario_Simple.csv')
 
-    diccionario_verificado_simple.rename(columns={'ï»¿KEY_benef': 'KEY_benef'}, inplace=True)
+    diccionario_verificado_simple.rename(columns={'ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¯ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â»ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿KEY_benef': 'KEY_benef'}, inplace=True)
 
     listado_beneficiarios_parte_I = pd.merge(listado_beneficiarios, diccionario_verificado_simple, left_on="Estado-mun-KEY", right_on="KEY_benef", how='left', suffixes=('_benef', '_inegi'))
     listado_beneficiarios_parte_II = pd.merge(listado_beneficiarios_parte_I, dataset_inegi_clean, left_on="KEY_benef_Verificado", right_on="KEY_inegi", how='left', suffixes=('_benef', '_inegi'))
