@@ -9,7 +9,7 @@ import pandas as pd
 import base64
 from io import StringIO
 from src.dataset_download import download_datasets
-from src.data_cleaning_and_merge import data_cleaning, data_cleaning2
+from src.data_cleaning_and_merge import data_cleaning, data_cleaning2, load_datasets
 from src.scrape_urls import scrape_urls
 from streamlit_option_menu import option_menu as om
 # Incluir estas líneas en cada script para registrar los logs
@@ -58,6 +58,7 @@ def clear_directory(directory):
 def data_cleaning_function(dataset):
     if dataset == 'productores_autorizados_2023':
         data_cleaning()
+        
         st.success("El proceso de limpieza de datos ha terminado. En la siguiente pestaña puede proceder con la descarga de los datos estandarizados.")
     elif dataset == 'beneficiarios_fertilizantes_2023':
         data_cleaning2()
@@ -85,15 +86,11 @@ def show_intro():
 
     uploaded_file = st.file_uploader("Suba el diccionario manual para empezar el proceso.")
     if uploaded_file is not None:
-        # Check if the file is a CSV (or similar) before trying to read it as a DataFrame
+        # Check if the file is a CSV (or similar) before trying to read it
         if uploaded_file.name.endswith('.csv'):
-
-            # To convert to a string based IO:
-            stringio = StringIO(uploaded_file.getvalue().decode("cp1252"))
-            # Reset the StringIO object to the beginning
-            stringio.seek(0)
-            dataframe = pd.read_csv(stringio)
-            dataframe.to_csv(os.path.join('data', uploaded_file.name))
+            # Directly save the uploaded file to avoid modifying its content
+            with open(os.path.join('data', uploaded_file.name), "wb") as f:
+                f.write(uploaded_file.getvalue())
             st.success(f"El archivo {uploaded_file.name} ha sido subido con éxito.")
         else:
             st.error("¡El archivo tiene que ser un .csv para continuar con el proceso!")
@@ -180,34 +177,76 @@ def data_download(url, download_destination_folder, progress_callback=None): # E
             "El proceso de descarga ha terminado. En la siguiente pestaña puede proceder con la limpieza de los datos."
         )
 
-    session_state_with_love_mottum('footer3')
-
 def clean_data_screen():
     if st.session_state.main_page == 'Productores autorizados 2023':
         required_files = [
             'data/dataset_inegi.csv',
             'data/Diccionario_manual.csv'
         ]
+    
+        listado_productores, rowSum = load_datasets('data/productores_autorizados/')
+
+        stats = {
+            'Número de filas': [rowSum],
+            'Número de columnas': [listado_productores.shape[1]],
+            # Add more statistics here if needed
+        }
+        stats_df = pd.DataFrame(stats)
+        # Display statistics
+        st.markdown("""
+        <style>
+        .centered {
+            font-size: 15px; /* Adjust the size as needed */
+            font-weight: bold; /* Makes the text bold */
+            /* Add more styling as needed */
+        }
+        </style>
+        <div class="centered">Current dataset</div>
+        """, unsafe_allow_html=True)
+
+        st.table(stats_df)
+
         with st.spinner(
             'Ejecutando scripts... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado!'
         ):
             cols_button = st.columns([1, 1, 1])
             if cols_button[1].button('Limpieza de datos de Listado Productores2023.', key='start_process_button'):
                 data_cleaning_function('productores_autorizados_2023')
-                st.success("El proceso de limpieza de datos ha terminado. En la siguiente pestaña puede proceder con la descarga de los datos estandarizados.")
+                #st.success("El proceso de limpieza de datos ha terminado. En la siguiente pestaña puede proceder con la descarga de los datos estandarizados.")
             session_state_with_love_mottum('footer4')
     elif st.session_state.main_page == 'Beneficiarios fertilizantes 2023':
         required_files = [
             'data/dataset_inegi.csv',
             'data/Diccionario_Simple.csv'
         ]
+        listado_beneficiarios, rowSum = load_datasets('data/productores_beneficiarios/')
+
+        stats = {
+            'Número de filas': [rowSum],
+            'Número de columnas': [listado_beneficiarios.shape[1]],
+            # Add more statistics here if needed
+        }
+        stats_df = pd.DataFrame(stats)
+        # Display statistics
+        st.markdown("""
+        <style>
+        .centered {
+            font-size: 15px; /* Adjust the size as needed */
+            font-weight: bold; /* Makes the text bold */
+            /* Add more styling as needed */
+        }
+        </style>
+        <div class="centered">Current dataset</div>
+        """, unsafe_allow_html=True)
+
+        st.table(stats_df)
+
         with st.spinner(
             'Ejecutando scripts... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado!'
         ):
             cols_button = st.columns([1, 1, 1])
             if cols_button[1].button('Limpieza de datos de Listado Beneficiarios2023.', key='start_process_button'):
                 data_cleaning_function('beneficiarios_fertilizantes_2023')
-                st.success("El proceso de limpieza de datos ha terminado. En la siguiente pestaña puede proceder con la descarga de los datos estandarizados.")
             session_state_with_love_mottum('footer5')
 
     missing_files = [file for file in required_files if not os.path.exists(file)]

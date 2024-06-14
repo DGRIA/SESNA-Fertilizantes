@@ -299,8 +299,6 @@ def data_cleaning2():
 
     diccionario_verificado_simple = pd.read_csv('data/Diccionario_Simple.csv')
 
-    diccionario_verificado_simple.rename(columns={'ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¯ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â»ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿KEY_benef': 'KEY_benef'}, inplace=True)
-
     listado_beneficiarios_parte_I = pd.merge(listado_beneficiarios, diccionario_verificado_simple, left_on="Estado-mun-KEY", right_on="KEY_benef", how='left', suffixes=('_benef', '_inegi'))
     listado_beneficiarios_parte_II = pd.merge(listado_beneficiarios_parte_I, dataset_inegi_clean, left_on="KEY_benef_Verificado", right_on="KEY_inegi", how='left', suffixes=('_benef', '_inegi'))
     listado_beneficiarios_parte_II = listado_beneficiarios_parte_II.drop_duplicates(subset = ['ACUSE ESTATAL'],keep = 'first')
