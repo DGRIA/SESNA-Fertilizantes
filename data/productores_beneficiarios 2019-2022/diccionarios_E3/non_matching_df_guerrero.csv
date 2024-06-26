@@ -5,7 +5,6 @@ GUERRERO,guerrero-ayutla de los libres-la concordia,guerrero-ayutla de los libre
 GUERRERO,guerrero-ayutla de los libres-ahuacachahue (ndog'yo itun tichi),guerrero-ayutla de los libres-ayutla de los libres,guerrero-ayutla de los libres-ayutla de los libres
 GUERRERO,guerrero-ayutla de los libres-san antonio abad,guerrero-ayutla de los libres-ayutla de los libres,guerrero-ayutla de los libres-ayutla de los libres
 GUERRERO,guerrero-atoyac de alvarez-el paraiso,guerrero-atoyac de alvarez-atoyac de alvarez,guerrero-atoyac de alvarez-atoyac de alvarez
-GUERRERO,guerrero-chilapa de alvarez-tenexatlajco (tenexatlaco),guerrero-chilapa de alvarez-chilapa de alvarez,guerrero-chilapa de alvarez-chilapa de alvarez
 GUERRERO,guerrero-cuajinicuilapa-buenos aires,guerrero-cuajinicuilapa-cuajinicuilapa,guerrero-cuajinicuilapa-cuajinicuilapa
 GUERRERO,guerrero-ayutla de los libres-el mesoncillo,guerrero-ayutla de los libres-ayutla de los libres,guerrero-ayutla de los libres-ayutla de los libres
 GUERRERO,guerrero-zitlala-coacoyul,guerrero-zitlala-zitlala,guerrero-zitlala-zitlala
@@ -13,6 +12,7 @@ GUERRERO,guerrero-tecpan de galeana-platanillo,guerrero-tecpan de galeana-platan
 GUERRERO,guerrero-igualapa-acalmani,guerrero-igualapa-igualapa,guerrero-igualapa-igualapa
 GUERRERO,guerrero-chilpancingo de los bravo-la haciendita,guerrero-chilpancingo de los bravo-chilpancingo de los bravo,guerrero-chilpancingo de los bravo-chilpancingo de los bravo
 GUERRERO,guerrero-san marcos-las vigas,guerrero-san marcos-san marcos,guerrero-san marcos-san marcos
+GUERRERO,guerrero-chilapa de alvarez-xicaixtlahuac (la laguna),guerrero-chilapa de alvarez-chilapa de alvarez,guerrero-chilapa de alvarez-chilapa de alvarez
 GUERRERO,guerrero-juchitan-agua zarca,guerrero-juchitan-juchitan,guerrero-juchitan-juchitan
 GUERRERO,guerrero-tecoanapa-buenavista de allende (buenavista),guerrero-tecoanapa-buenavista de allende,guerrero-tecoanapa-buenavista de allende
 GUERRERO,guerrero-pungarabato-seminario diocesano la anunciacion de maria,guerrero-acapulco de juarez-agua del perro,guerrero-acapulco de juarez-agua del perro
@@ -64,7 +64,6 @@ GUERRERO,guerrero-ayutla de los libres-las cruces,guerrero-ayutla de los libres-
 GUERRERO,guerrero-acatepec-el mirador,guerrero-acatepec-acatepec,guerrero-acatepec-acatepec
 GUERRERO,guerrero-jose joaquin de herrera-acalco,guerrero-jose joaquin de herrera-apozonalco,guerrero-jose joaquin de herrera-apozonalco
 GUERRERO,guerrero-ayutla de los libres-meson zapote,guerrero-ayutla de los libres-ayutla de los libres,guerrero-ayutla de los libres-ayutla de los libres
-GUERRERO,guerrero-zitlala-huiscomulco,guerrero-zitlala-huixcomulco,guerrero-zitlala-huixcomulco
 GUERRERO,guerrero-cochoapa el grande-los pinos,guerrero-cochoapa el grande-cochoapa el grande,guerrero-cochoapa el grande-cochoapa el grande
 GUERRERO,guerrero-acatepec-el aguacate,guerrero-acatepec-acatepec,guerrero-acatepec-acatepec
 GUERRERO,guerrero-ayutla de los libres-cumbres de yolotepec,guerrero-ayutla de los libres-ayutla de los libres,guerrero-ayutla de los libres-ayutla de los libres
@@ -90,7 +89,6 @@ GUERRERO,guerrero-la union de isidoro montes de oca-el aguila,guerrero-la union 
 GUERRERO,guerrero-san marcos-las lomitas de nexpa (las lomitas),guerrero-san marcos-las lomitas de papagayo,guerrero-san marcos-las lomitas de papagayo
 GUERRERO,guerrero-ayutla de los libres-san felipe,guerrero-ayutla de los libres-ayutla de los libres,guerrero-ayutla de los libres-ayutla de los libres
 GUERRERO,guerrero-ayutla de los libres-la angostura,guerrero-ayutla de los libres-ayutla de los libres,guerrero-ayutla de los libres-ayutla de los libres
-GUERRERO,guerrero-chilapa de alvarez-buenavista del rio,guerrero-chilapa de alvarez-buena vista del rio,guerrero-chilapa de alvarez-buena vista del rio
 GUERRERO,guerrero-ayutla de los libres-coxcatlan san pedro,guerrero-ayutla de los libres-ayutla de los libres,guerrero-ayutla de los libres-ayutla de los libres
 GUERRERO,guerrero-ayutla de los libres-cumbres de cotzalzin,guerrero-ayutla de los libres-ayutla de los libres,guerrero-ayutla de los libres-ayutla de los libres
 GUERRERO,guerrero-ayutla de los libres-juquila,guerrero-ayutla de los libres-ayutla de los libres,guerrero-ayutla de los libres-ayutla de los libres
@@ -152,12 +150,9 @@ GUERRERO,guerrero-san marcos-las lechugas,guerrero-san marcos-san marcos,guerrer
 GUERRERO,guerrero-tecoanapa-lazaro cardenas (cololonia lazaro cardenas del rio),guerrero-tecoanapa-lazaro cardenas (colonia lazaro cardenas del rio),guerrero-tecoanapa-lazaro cardenas (colonia lazaro cardenas del rio)
 GUERRERO,guerrero-san marcos-espinalillo del tenante (espinalillo),guerrero-acapulco de juarez-amatepec,guerrero-acapulco de juarez-amatepec
 GUERRERO,guerrero-chilapa de alvarez-buenavista,guerrero-chilapa de alvarez-buena vista,guerrero-chilapa de alvarez-buena vista
-GUERRERO,guerrero-chilapa de alvarez-xalocan,guerrero-chilapa de alvarez-xalokan,guerrero-chilapa de alvarez-xalokan
-GUERRERO,guerrero-chilapa de alvarez-acostapachtlan,guerrero-chilapa de alvarez-acojtapachtlan,guerrero-chilapa de alvarez-acojtapachtlan
 GUERRERO,guerrero-chilapa de alvarez-jocutla,guerrero-chilapa de alvarez-ocutla,guerrero-chilapa de alvarez-ocutla
 GUERRERO,guerrero-acatepec-plan de palo viejo (loma vista),guerrero-acatepec-plan de buena vista,guerrero-acatepec-plan de buena vista
 GUERRERO,guerrero-malinaltepec-piedra pintada,guerrero-malinaltepec-malinaltepec,guerrero-malinaltepec-malinaltepec
-GUERRERO,guerrero-atlixtac-chimixtla,guerrero-atlixtac-chilmixtla,guerrero-atlixtac-chilmixtla
 GUERRERO,guerrero-chilapa de alvarez-el limon,guerrero-chilapa de alvarez-chilapa de alvarez,guerrero-chilapa de alvarez-chilapa de alvarez
 GUERRERO,guerrero-apaxtla-la lagunita,guerrero-apaxtla-las juntas,guerrero-apaxtla-las juntas
 GUERRERO,guerrero-san marcos-san jose la pala,guerrero-san marcos-san marcos,guerrero-san marcos-san marcos
@@ -183,7 +178,6 @@ GUERRERO,guerrero-ayutla de los libres-el coquillo,guerrero-ayutla de los libres
 GUERRERO,guerrero-xochistlahuaca-plan de guadalupe,guerrero-xochistlahuaca-xochistlahuaca,guerrero-xochistlahuaca-xochistlahuaca
 GUERRERO,guerrero-ayutla de los libres-la palma (colonia paraiso),guerrero-ayutla de los libres-ayutla de los libres,guerrero-ayutla de los libres-ayutla de los libres
 GUERRERO,guerrero-tlapa de comonfort-rancho anastacio avelino,guerrero-tlapa de comonfort-tlapa de comonfort,guerrero-tlapa de comonfort-tlapa de comonfort
-GUERRERO,guerrero-atlixtac-rancho agua zarca,guerrero-atlixtac-atlixtac,guerrero-atlixtac-atlixtac
 GUERRERO,guerrero-pedro ascencio alquisiras-la aurora,guerrero-pedro ascencio alquisiras-la reforma,guerrero-pedro ascencio alquisiras-la reforma
 GUERRERO,guerrero-cuajinicuilapa-la petaca (hacienda la petaca),guerrero-cuajinicuilapa-cuajinicuilapa,guerrero-cuajinicuilapa-cuajinicuilapa
 GUERRERO,guerrero-ayutla de los libres-el potrero,guerrero-ayutla de los libres-ayutla de los libres,guerrero-ayutla de los libres-ayutla de los libres
@@ -209,6 +203,7 @@ GUERRERO,guerrero-malinaltepec-pie de la cuesta,guerrero-malinaltepec-malinaltep
 GUERRERO,guerrero-ayutla de los libres-plan del potrero,guerrero-ayutla de los libres-ayutla de los libres,guerrero-ayutla de los libres-ayutla de los libres
 GUERRERO,guerrero-san marcos-el rodeo,guerrero-san marcos-san marcos,guerrero-san marcos-san marcos
 GUERRERO,guerrero-quechultenango-buenavista,guerrero-quechultenango-quechultenango,guerrero-quechultenango-quechultenango
+GUERRERO,guerrero-teloloapan-hacienda de los fresnos,guerrero-teloloapan-teloloapan,guerrero-teloloapan-teloloapan
 GUERRERO,guerrero-tlacoapa-tlacoapa centro tres,guerrero-tlacoapa-tlacoapa,guerrero-tlacoapa-tlacoapa
 GUERRERO,guerrero-ayutla de los libres-tierra blanca,guerrero-ayutla de los libres-ayutla de los libres,guerrero-ayutla de los libres-ayutla de los libres
 GUERRERO,guerrero-cochoapa el grande-rio olor,guerrero-cochoapa el grande-cochoapa el grande,guerrero-cochoapa el grande-cochoapa el grande
@@ -271,6 +266,7 @@ GUERRERO,guerrero-general heliodoro castillo-la canita (colonia san antonio),gue
 GUERRERO,guerrero-iguala de la independencia-colonia el capire,guerrero-iguala de la independencia-colonia el carmen,guerrero-iguala de la independencia-colonia el carmen
 GUERRERO,guerrero-coyuca de benitez-piedras paradas,guerrero-coyuca de benitez-coyuca de benitez,guerrero-coyuca de benitez-coyuca de benitez
 GUERRERO,guerrero-quechultenango-el zapote,guerrero-quechultenango-quechultenango,guerrero-quechultenango-quechultenango
+GUERRERO,guerrero-atlixtac-cerro liro (gabino martinez sanchez),guerrero-acapulco de juarez-apalani,guerrero-acapulco de juarez-apalani
 GUERRERO,guerrero-la union de isidoro montes de oca-la palma,guerrero-la union de isidoro montes de oca-las palmas,guerrero-la union de isidoro montes de oca-las palmas
 GUERRERO,guerrero-iguala de la independencia-colonia el paraiso uno (materiales caslem),guerrero-iguala de la independencia-iguala de la independencia,guerrero-iguala de la independencia-iguala de la independencia
 GUERRERO,guerrero-leonardo bravo-cuadrilla vieja,guerrero-acapulco de juarez-los organos de juan r. escudero,guerrero-acapulco de juarez-los organos de juan r. escudero
@@ -281,6 +277,7 @@ GUERRERO,guerrero-xochistlahuaca-rancho benigno lopez,guerrero-xochistlahuaca-xo
 GUERRERO,guerrero-apaxtla-chantepec,guerrero-apaxtla-xochitepec,guerrero-apaxtla-xochitepec
 GUERRERO,guerrero-coyuca de benitez-pie de la cuesta,guerrero-coyuca de benitez-coyuca de benitez,guerrero-coyuca de benitez-coyuca de benitez
 GUERRERO,guerrero-arcelia-fraccionamiento flores magon,guerrero-acapulco de juarez-san pedro cacahuatepec (vereda de amatillo),guerrero-acapulco de juarez-san pedro cacahuatepec (vereda de amatillo)
+GUERRERO,guerrero-atoyac de alvarez-la loma,guerrero-atoyac de alvarez-atoyac de alvarez,guerrero-atoyac de alvarez-atoyac de alvarez
 GUERRERO,guerrero-taxco de alarcon-colonia el potrero,guerrero-taxco de alarcon-taxco de alarcon,guerrero-taxco de alarcon-taxco de alarcon
 GUERRERO,guerrero-iguala de la independencia-las palmas,guerrero-iguala de la independencia-iguala de la independencia,guerrero-iguala de la independencia-iguala de la independencia
 GUERRERO,guerrero-san marcos-ninguno,guerrero-san marcos-san marcos,guerrero-san marcos-san marcos

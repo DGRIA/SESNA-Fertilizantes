@@ -1,7 +1,9 @@
 ENTIDAD,KEY_benef_loc,KEY_inegi_localidad,best_match
 OAXACA,oaxaca-villa de tututepec de melchor ocampo-villa de tututepec de melchor ocampo,oaxaca-abejones-abejones,oaxaca-abejones-abejones
 OAXACA,oaxaca-villa de tututepec de melchor ocampo-rio grande o piedra parada,oaxaca-villa de tututepec-rio grande o piedra parada,oaxaca-villa de tututepec-rio grande o piedra parada
-OAXACA,oaxaca-villa hidalgo-villa hidalgo,oaxaca-villa hidalgo-tras del cerro,oaxaca-villa hidalgo-tras del cerro
+OAXACA,oaxaca-san blas atempa-puente madera,oaxaca-heroica villa de san blas atempa-puente madera,oaxaca-heroica villa de san blas atempa-puente madera
+OAXACA,oaxaca-san blas atempa-san blas atempa,oaxaca-heroica villa de san blas atempa-san blas atempa,oaxaca-heroica villa de san blas atempa-san blas atempa
+OAXACA,oaxaca-villa hidalgo-villa hidalgo,oaxaca-villa hidalgo yalalag-tras del cerro,oaxaca-villa hidalgo yalalag-tras del cerro
 OAXACA,oaxaca-santiago yaveo-la trinidad,oaxaca-santiago yaveo-santiago yaveo,oaxaca-santiago yaveo-santiago yaveo
 OAXACA,oaxaca-heroica ciudad de tlaxiaco-colonia adolfo lopez mateos,oaxaca-heroica ciudad de tlaxiaco-heroica ciudad de tlaxiaco,oaxaca-heroica ciudad de tlaxiaco-heroica ciudad de tlaxiaco
 OAXACA,oaxaca-santo tomas ocotepec-benito juarez,oaxaca-santo tomas ocotepec-santo tomas ocotepec,oaxaca-santo tomas ocotepec-santo tomas ocotepec
@@ -44,6 +46,7 @@ OAXACA,oaxaca-loma bonita-el mirador,oaxaca-loma bonita-loma bonita,oaxaca-loma 
 OAXACA,oaxaca-santa cruz nundaco-loma nuhucua,oaxaca-santa cruz nundaco-loma nuhu-cua,oaxaca-santa cruz nundaco-loma nuhu-cua
 OAXACA,oaxaca-villa de tututepec de melchor ocampo-la canada,oaxaca-villa de tututepec-villa de tututepec,oaxaca-villa de tututepec-villa de tututepec
 OAXACA,oaxaca-santa cruz nundaco-ojo de agua,oaxaca-santa cruz nundaco-santa cruz nundaco,oaxaca-santa cruz nundaco-santa cruz nundaco
+OAXACA,oaxaca-san felipe jalapa de diaz-chuparrosa,oaxaca-san felipe jalapa de diaz-la chuparrosa,oaxaca-san felipe jalapa de diaz-la chuparrosa
 OAXACA,oaxaca-san mateo yucutindoo-el sabino,oaxaca-san mateo yucutindoo-san mateo yucutindoo,oaxaca-san mateo yucutindoo-san mateo yucutindoo
 OAXACA,oaxaca-san juan mixtepec-santa cruz,oaxaca-santa cruz mixtepec-santa cruz mixtepec,oaxaca-santa cruz mixtepec-santa cruz mixtepec
 OAXACA,oaxaca-san juan mixtepec-santa cruz,oaxaca-santa cruz mixtepec-santa cruz mixtepec,oaxaca-santa cruz mixtepec-santa cruz mixtepec
@@ -102,12 +105,14 @@ OAXACA,oaxaca-santa cruz itundujia-hidalgo,oaxaca-santa cruz itundujia-santa cru
 OAXACA,oaxaca-tlacolula de matamoros-tanivet [centro de readaptacion social femenil],oaxaca-tlacolula de matamoros-tlacolula de matamoros,oaxaca-tlacolula de matamoros-tlacolula de matamoros
 OAXACA,oaxaca-heroica ciudad de juchitan de zaragoza-charis,oaxaca-juchitan de zaragoza-juchitan de zaragoza,oaxaca-juchitan de zaragoza-juchitan de zaragoza
 OAXACA,oaxaca-san agustin loxicha-tierra blanca,oaxaca-san agustin loxicha-san agustin loxicha,oaxaca-san agustin loxicha-san agustin loxicha
+OAXACA,oaxaca-san francisco jaltepetongo-yucano,oaxaca-san francisco jaltepetongo-yuxano,oaxaca-san francisco jaltepetongo-yuxano
 OAXACA,oaxaca-villa de tututepec de melchor ocampo-santa maria acatepec,oaxaca-villa de tututepec-villa de tututepec,oaxaca-villa de tututepec-villa de tututepec
 OAXACA,oaxaca-heroica ciudad de juchitan de zaragoza-rancho de los vasquez (colonia palomar),oaxaca-juchitan de zaragoza-rancho de los vasquez (colonia palomar),oaxaca-juchitan de zaragoza-rancho de los vasquez (colonia palomar)
 OAXACA,oaxaca-miahuatlan de porfirio diaz-agua blanca,oaxaca-miahuatlan de porfirio diaz-miahuatlan de porfirio diaz,oaxaca-miahuatlan de porfirio diaz-miahuatlan de porfirio diaz
 OAXACA,oaxaca-san juan mazatlan-madero,oaxaca-san juan mazatlan-san juan mazatlan,oaxaca-san juan mazatlan-san juan mazatlan
 OAXACA,oaxaca-san francisco ixhuatan-20 de noviembre (el morro),oaxaca-san francisco ixhuatan-san francisco ixhuatan,oaxaca-san francisco ixhuatan-san francisco ixhuatan
 OAXACA,oaxaca-santa cruz zenzontepec-el carrizal,oaxaca-santa cruz zenzontepec-santa cruz zenzontepec,oaxaca-santa cruz zenzontepec-santa cruz zenzontepec
+OAXACA,oaxaca-villa hidalgo-pozo conejo,oaxaca-villa hidalgo yalalag-pozo conejo,oaxaca-villa hidalgo yalalag-pozo conejo
 OAXACA,oaxaca-san lucas ojitlan-paso limon (nuevo paso limon),oaxaca-san lucas ojitlan-san lucas ojitlan,oaxaca-san lucas ojitlan-san lucas ojitlan
 OAXACA,oaxaca-ocotlan de morelos-buenavista,oaxaca-ocotlan de morelos-ocotlan de morelos,oaxaca-ocotlan de morelos-ocotlan de morelos
 OAXACA,oaxaca-heroica ciudad de juchitan de zaragoza-parada san vicente,oaxaca-juchitan de zaragoza-juchitan de zaragoza,oaxaca-juchitan de zaragoza-juchitan de zaragoza
@@ -116,6 +121,7 @@ OAXACA,"oaxaca-heroica villa tezoatlan de segura y luna, cuna de la independenci
 OAXACA,oaxaca-san juan mazatlan-el pipila,oaxaca-san juan mazatlan-san juan mazatlan,oaxaca-san juan mazatlan-san juan mazatlan
 OAXACA,oaxaca-villa de tututepec de melchor ocampo-san jose manialtepec,oaxaca-villa de tututepec-villa de tututepec,oaxaca-villa de tututepec-villa de tututepec
 OAXACA,oaxaca-santiago huajolotitlan-lazaro cardenas,oaxaca-santiago huajolotitlan-santiago huajolotitlan,oaxaca-santiago huajolotitlan-santiago huajolotitlan
+OAXACA,oaxaca-santiago juxtlahuaca-la luz rahelle,oaxaca-santiago juxtlahuaca-santiago juxtlahuaca,oaxaca-santiago juxtlahuaca-santiago juxtlahuaca
 OAXACA,oaxaca-villa de tututepec de melchor ocampo-san francisco de arriba,oaxaca-villa de tututepec-san francisco de arriba,oaxaca-villa de tututepec-san francisco de arriba
 OAXACA,oaxaca-santo domingo tehuantepec-guadalupe hinojosa de murat [fraccionamiento],oaxaca-santo domingo tehuantepec-santo domingo tehuantepec,oaxaca-santo domingo tehuantepec-santo domingo tehuantepec
 OAXACA,oaxaca-santiago ixtayutla-villa nueva,oaxaca-santiago ixtayutla-santiago ixtayutla,oaxaca-santiago ixtayutla-santiago ixtayutla
