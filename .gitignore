@@ -319,13 +319,6 @@ pyrightconfig.json
 # MAC
 .DS_Store
 ## FOR THIS PROJECT (Provisional)
+data/*
 
-# Ignore everything in the dataset_inegi directory
-dataset_inegi/
-
-# Ignore everything in the data directory
-
-# Re-include .gitkeep files in specific directories under data
-
-# Ignore everything in the logs directory
 /logs/
