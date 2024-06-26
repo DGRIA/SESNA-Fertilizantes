@@ -319,6 +319,5 @@ pyrightconfig.json
 # MAC
 .DS_Store
 ## FOR THIS PROJECT (Provisional)
-data/*
 
 /logs/
