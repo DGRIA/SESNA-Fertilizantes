@@ -327,6 +327,9 @@ data/*
 
 # Re-include .gitkeep files in specific directories under data
 !/data/.gitkeep
+!/data/productores_autorizados/
+!/data/productores_beneficiarios/
+!/data/productores_beneficiarios 2019-2022/
 !/data/productores_autorizados/.gitkeep
 !/data/productores_beneficiarios/.gitkeep
 !/data/productores_beneficiarios 2019-2022/.gitkeep
