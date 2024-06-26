@@ -320,6 +320,8 @@ pyrightconfig.json
 .DS_Store
 ## FOR THIS PROJECT (Provisional)
 productores_autorizados/
+productores_beneficiarios/
+productores_beneficiarios 2019-2022/
 dataset_inegi/
 data/*
 !/data/.gitkeep
