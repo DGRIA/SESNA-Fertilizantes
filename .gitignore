@@ -327,10 +327,10 @@ data/*
 !data/productores_beneficiarios 2019-2022/diccionarios_E3/.gitkeep
 
 
-data/productores_autorizados/*
-data/productores_beneficiarios/*
-data/productores_beneficiarios 2019-2022/*
-data/productores_beneficiarios 2019-2022/diccionarios_E3/*
+#data/productores_autorizados/*
+#data/productores_beneficiarios/*
+#data/productores_beneficiarios 2019-2022/*
+#data/productores_beneficiarios 2019-2022/diccionarios_E3/*
 
 
 
