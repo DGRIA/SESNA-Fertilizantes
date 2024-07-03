@@ -193,7 +193,7 @@ def data_cleaning():
     diccionario['CVE_MUN'] = diccionario['CVE_MUN'].astype(str)
     print(diccionario['CVE_ENT'].unique())
 
-    save_to_csv(diccionario, 'data/merged_dataset.csv')
+    save_to_csv(diccionario, 'data/productores_autorizados/diccionarios_E1diccionario_prod.csv')
 
     # Crear una variable KEY en listado de productores y el diccionario para hacer el join
     listado_productores['ESTADO_Clean'] = listado_productores['ESTADO'].apply(clean_text)
@@ -201,11 +201,9 @@ def data_cleaning():
     listado_productores['Estado-mun-KEY'] = listado_productores['ESTADO_Clean'].astype(str) + '-' + listado_productores[
         'MUNICIPIO_Clean'].astype(str)
 
-    diccionario_Sin_VC = diccionario[diccionario["NOM_ENT"] != "Veracruz de Ignacio de la Llave"]
+    diccionario_manipulado = pd.read_csv('data/productores_autorizados/diccionarios_E1/diccionario_prod.csv', encoding='cp1252')
 
-    diccionario_manipulado = pd.read_csv('data/Diccionario_manual.csv', encoding='cp1252')
-
-    listado_productores_complete = pd.merge(listado_productores, diccionario, left_on="Estado-mun-KEY", right_on="KEY_prod", how='left', suffixes=('_prod', '_inegi'))
+    listado_productores_complete = pd.merge(listado_productores, diccionario_manipulado, left_on="Estado-mun-KEY", right_on="KEY_prod", how='left', suffixes=('_prod', '_inegi'))
 
     #listado_productores_complete[['CVE_ENT', 'CVE_MUN']] = listado_productores_complete['CVE_MUN_Unique'].str.split('-',expand=True)
     listado_productores_complete = listado_productores_complete[
@@ -287,11 +285,9 @@ def data_cleaning2():
     diccionario['CVE_MUN'] = diccionario['CVE_MUN'].astype(str)
     print(diccionario['CVE_ENT'].unique())
 
-    save_to_csv(diccionario, 'data/merged_dataset.csv')
-
     diccionario.drop_duplicates(subset=['KEY_benef'], inplace=True)
 
-    save_to_csv(diccionario, 'data/merged_dataset.csv')
+    save_to_csv(diccionario, 'data/productores_beneficiarios/diccionarios_E2/diccionario_benef_E2.csv')
 
     listado_beneficiarios['ESTADO_Clean'] = listado_beneficiarios['ESTADO'].apply(clean_text)
     listado_beneficiarios['MUNICIPIO_Clean'] = listado_beneficiarios['MUNICIPIO'].apply(clean_text)
