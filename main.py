@@ -13,9 +13,11 @@ from src.data_cleaning_and_merge import data_cleaning, data_cleaning2, load_data
 from src.scrape_urls import scrape_urls, scrape_xlsx
 from streamlit_option_menu import option_menu as om
 import requests
+
 # Incluir estas líneas en cada script para registrar los logs
 logger = logging.getLogger("Fertilizantes")
 logger.setLevel(logging.INFO)
+
 
 def session_state_with_love_mottum(unique_id):
     # Construct a unique session state key based on the provided unique_id
@@ -34,18 +36,19 @@ def session_state_with_love_mottum(unique_id):
         display_love_mottum()
         st.session_state[key] = True
 
+
 def convert_xlsx_to_csv_in_directory(directory_path):
     # List all .xlsx files in the directory
     xlsx_files = [f for f in os.listdir(directory_path) if f.endswith('.xlsx')]
     total_files = len(xlsx_files)
-    
+
     if total_files == 0:
         st.write("No .xlsx files found to convert.")
         return
-    
+
     # Initialize the progress bar
     progress_bar = st.progress(0)
-    
+
     for index, filename in enumerate(xlsx_files, start=1):
         # Construct full file path
         file_path = os.path.join(directory_path, filename)
@@ -57,18 +60,21 @@ def convert_xlsx_to_csv_in_directory(directory_path):
         # Save as .csv
         df.to_csv(csv_file_path, index=False)
         print(f"Converted {filename} to {csv_filename}")
-        
+
         # Update the progress bar
         progress_bar.progress(index / total_files)
-    
+
     st.write("All files have been converted.")
+
 
 def display_love_mottum():
     """Displays the 'Made with love' motto and logo."""
     st.markdown("<br>", unsafe_allow_html=True)
     cols = st.columns([1, 1, 1])  # Create three columns
     inner_cols = cols[2].columns([1, 1, 1, 1])  # Create four columns inside the third main column
-    inner_cols[0].markdown("<p style='text-align: center; font-family: Manrope; padding-top: 12px; white-space: nowrap;'>Made with love</p>", unsafe_allow_html=True)  # Center the text, change the font, and add padding
+    inner_cols[0].markdown(
+        "<p style='text-align: center; font-family: Manrope; padding-top: 12px; white-space: nowrap;'>Made with love</p>",
+        unsafe_allow_html=True)  # Center the text, change the font, and add padding
     inner_cols[2].image('docs/images/mottum2.png', use_column_width=True)
 
 
@@ -85,41 +91,45 @@ def clear_directory(directory):
         except Exception as e:
             print(f'Failed to delete {file_path}. Reason: {e}')
 
+
 def data_cleaning_function(dataset):
     if dataset == 'productores_autorizados_2023':
         data_cleaning()
-        
-        st.success("El proceso de limpieza de datos ha terminado. En la siguiente pestaña puede proceder con la descarga de los datos estandarizados.")
+
+        st.success(
+            "El proceso de limpieza de datos ha terminado. En la siguiente pestaña puede proceder con la descarga de los datos estandarizados.")
     elif dataset == 'beneficiarios_fertilizantes_2023':
         data_cleaning2()
-        st.success("El proceso de limpieza de datos ha terminado. En la siguiente pestaña puede proceder con la descarga de los datos estandarizados.")
+        st.success(
+            "El proceso de limpieza de datos ha terminado. En la siguiente pestaña puede proceder con la descarga de los datos estandarizados.")
+
 
 def show_intro():
     if st.session_state.main_page == 'Productores autorizados 2023':
         st.markdown((
-        """
-            La siguiente aplicacion ha sido desarrollada para [SESNA](https://www.sesna.gob.mx/).
-            El propósito de esta aplicación es la descarga, limpieza y unión de las bases de datos
-            publicadas en la siguiente URL: [Programa de Fertilizantes 2023 Listados Autorizados](https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-autorizados).
-        """
-    ))
+            """
+                La siguiente aplicacion ha sido desarrollada para [SESNA](https://www.sesna.gob.mx/).
+                El propósito de esta aplicación es la descarga, limpieza y unión de las bases de datos
+                publicadas en la siguiente URL: [Programa de Fertilizantes 2023 Listados Autorizados](https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-autorizados).
+            """
+        ))
     elif st.session_state.main_page == 'Beneficiarios fertilizantes 2023':
         st.markdown((
-        """
-            La siguiente aplicacion ha sido desarrollada para [SESNA](https://www.sesna.gob.mx/).
-            El propósito de esta aplicación es la descarga, limpieza y unión de las bases de datos
-            publicadas en la siguiente URL: [Programa de Fertilizantes 2023 Beneficiarios Autorizados](https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-de-beneficiarios).
-        """
-    ))
+            """
+                La siguiente aplicacion ha sido desarrollada para [SESNA](https://www.sesna.gob.mx/).
+                El propósito de esta aplicación es la descarga, limpieza y unión de las bases de datos
+                publicadas en la siguiente URL: [Programa de Fertilizantes 2023 Beneficiarios Autorizados](https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-de-beneficiarios).
+            """
+        ))
     elif st.session_state.main_page == 'Beneficiarios fertilizantes 2019-2022':
         st.markdown((
-        """
-            La siguiente aplicacion ha sido desarrollada para [SESNA](https://www.sesna.gob.mx/).
-            El propósito de esta aplicación es la descarga, limpieza y unión de las bases de datos
-            publicadas en los siguientes URLs para el Programa de Fertilizantes 2019-2022 [Beneficiarios 2019](https://datos.gob.mx/busca/dataset/programa-fertilizantes-2019), [Beneficiarios 2020](https://datos.gob.mx/busca/dataset/programa-fertilizantes-2020), [Beneficiarios 2021](https://datos.gob.mx/busca/dataset/programa-fertilizantes-2021), [Beneficiarios 2022](https://datos.gob.mx/busca/dataset/programa-fertilizantes-2022).
-        """
-    ))
-        
+            """
+                La siguiente aplicacion ha sido desarrollada para [SESNA](https://www.sesna.gob.mx/).
+                El propósito de esta aplicación es la descarga, limpieza y unión de las bases de datos
+                publicadas en los siguientes URLs para el Programa de Fertilizantes 2019-2022 [Beneficiarios 2019](https://datos.gob.mx/busca/dataset/programa-fertilizantes-2019), [Beneficiarios 2020](https://datos.gob.mx/busca/dataset/programa-fertilizantes-2020), [Beneficiarios 2021](https://datos.gob.mx/busca/dataset/programa-fertilizantes-2021), [Beneficiarios 2022](https://datos.gob.mx/busca/dataset/programa-fertilizantes-2022).
+            """
+        ))
+
     st.markdown("<br>", unsafe_allow_html=True)
 
     uploaded_file = st.file_uploader("Suba el diccionario manual para empezar el proceso.")
@@ -135,28 +145,34 @@ def show_intro():
 
     session_state_with_love_mottum('footer')
 
+
 def start_process():
     if st.session_state.main_page == 'Productores autorizados 2023':
         cols_button = st.columns([1, 1, 1])
         if cols_button[1].button('Descargar Listado Autorizados2023.', key='start_process_button'):
-            data_download("https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-autorizados",  "data/productores_autorizados")
+            data_download("https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-autorizados",
+                          "data/productores_autorizados")
         session_state_with_love_mottum('footer1')
     elif st.session_state.main_page == 'Beneficiarios fertilizantes 2023':
         cols_button = st.columns([1, 1, 1])
         if cols_button[1].button('Descargar Listado Beneficiarios2023.', key='start_process_button'):
-            data_download("https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-de-beneficiarios",  "data/productores_beneficiarios")
+            data_download(
+                "https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-de-beneficiarios",
+                "data/productores_beneficiarios")
         session_state_with_love_mottum('footer2')
     elif st.session_state.main_page == 'Beneficiarios fertilizantes 2019-2022':
         cols_button = st.columns([1, 1, 1])
         if cols_button[1].button('Descargar Listado Beneficiarios2019-2022.', key='start_process_button'):
-            data_download("https://datos.gob.mx/busca/dataset/programa-fertilizantes-2019",  "data/productores_beneficiarios 2019-2022")
+            data_download("https://datos.gob.mx/busca/dataset/programa-fertilizantes-2019",
+                          "data/productores_beneficiarios 2019-2022")
         session_state_with_love_mottum('footer22')
 
 
-def data_download(url, download_destination_folder, progress_callback=None, urls = []): # Exit the function if any required file is missing
+def data_download(url, download_destination_folder, progress_callback=None,
+                  urls=[]):  # Exit the function if any required file is missing
     if not os.path.exists('data'):
-            os.makedirs('data')
-            print("Directory 'data' missing, creating data directory.")
+        os.makedirs('data')
+        print("Directory 'data' missing, creating data directory.")
     if not os.path.exists('data/productores_autorizados'):
         os.makedirs('data/productores_autorizados')
         print("Directory 'data/productores_autorizados' missing, creating data/productores_autorizados.")
@@ -165,7 +181,8 @@ def data_download(url, download_destination_folder, progress_callback=None, urls
         print("Directory 'data/productores_beneficiarios' missing, creating data/productores_beneficiarios.")
     if not os.path.exists('data/productores_beneficiarios 2019-2022'):
         os.makedirs('data/productores_beneficiarios 2019-2022')
-        print("Directory 'data/productores_beneficiarios 2019-2022' missing, creating data/productores_beneficiarios 2019-2022.")
+        print(
+            "Directory 'data/productores_beneficiarios 2019-2022' missing, creating data/productores_beneficiarios 2019-2022.")
 
     clear_directory('data/productores_autorizados')
     clear_directory('data/productores_beneficiarios')
@@ -173,8 +190,12 @@ def data_download(url, download_destination_folder, progress_callback=None, urls
     results = []
     datasets = []
 
-    urls = ["https://datos.gob.mx/busca/dataset/programa-fertilizantes-2019", "https://datos.gob.mx/busca/dataset/programa-fertilizantes-2020", "https://datos.gob.mx/busca/dataset/programa-fertilizantes-2021", "https://datos.gob.mx/busca/dataset/programa-fertilizantes-2022"]
-    with st.spinner('Ejecutando scripts... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado!'):
+    urls = ["https://datos.gob.mx/busca/dataset/programa-fertilizantes-2019",
+            "https://datos.gob.mx/busca/dataset/programa-fertilizantes-2020",
+            "https://datos.gob.mx/busca/dataset/programa-fertilizantes-2021",
+            "https://datos.gob.mx/busca/dataset/programa-fertilizantes-2022"]
+    with st.spinner(
+            'Ejecutando scripts... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado!'):
         if st.session_state.main_page == 'Productores autorizados 2023':
             download_urls = scrape_urls(url)
         elif st.session_state.main_page == 'Beneficiarios fertilizantes 2023':
@@ -188,13 +209,14 @@ def data_download(url, download_destination_folder, progress_callback=None, urls
         progress_bar = st.progress(0)
 
         print('download_urls:', download_urls)
-        print('results:',  results)
+        print('results:', results)
+
         # Define the progress callback function
         def progress_callback(progress):
             progress_bar.progress(progress)
 
         result = download_datasets(download_urls, download_destination_folder, progress_callback)
-        
+
         # Update progress to 100% after download_datasets completes
         # Explicitly set progress to 100% after all processing
 
@@ -231,13 +253,15 @@ def data_download(url, download_destination_folder, progress_callback=None, urls
 
         # Create a download button for the CSV file
         st.markdown(href, unsafe_allow_html=True)
-        
+
         logger.info("Fin de Ejecución")
-        st.write("Pasando archivos .xlsx a .csv... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado...")
+        st.write(
+            "Pasando archivos .xlsx a .csv... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado...")
         convert_xlsx_to_csv_in_directory('data/productores_beneficiarios 2019-2022')
         st.success(
             "El proceso de descarga ha terminado. En la siguiente pestaña puede proceder con la limpieza de los datos."
         )
+
 
 def clean_data_screen():
     if st.session_state.main_page == 'Productores autorizados 2023':
@@ -245,7 +269,7 @@ def clean_data_screen():
             'data/dataset_inegi.csv',
             'data/Diccionario_manual.csv'
         ]
-    
+
         listado_productores, rowSum = load_datasets('data/productores_autorizados/')
 
         stats = {
@@ -269,12 +293,12 @@ def clean_data_screen():
         st.table(stats_df)
 
         with st.spinner(
-            'Ejecutando scripts... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado!'
+                'Ejecutando scripts... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado!'
         ):
             cols_button = st.columns([1, 1, 1])
             if cols_button[1].button('Limpieza de datos de Listado Productores2023.', key='start_process_button'):
                 data_cleaning_function('productores_autorizados_2023')
-                #st.success("El proceso de limpieza de datos ha terminado. En la siguiente pestaña puede proceder con la descarga de los datos estandarizados.")
+                # st.success("El proceso de limpieza de datos ha terminado. En la siguiente pestaña puede proceder con la descarga de los datos estandarizados.")
             session_state_with_love_mottum('footer4')
     elif st.session_state.main_page == 'Beneficiarios fertilizantes 2023':
         required_files = [
@@ -304,7 +328,7 @@ def clean_data_screen():
         st.table(stats_df)
 
         with st.spinner(
-            'Ejecutando scripts... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado!'
+                'Ejecutando scripts... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado!'
         ):
             cols_button = st.columns([1, 1, 1])
             if cols_button[1].button('Limpieza de datos de Listado Beneficiarios2023.', key='start_process_button'):
@@ -312,12 +336,14 @@ def clean_data_screen():
             session_state_with_love_mottum('footer5')
 
     missing_files = [file for file in required_files if not os.path.exists(file)]
-    
+
     if missing_files:
         # Display an error message for each missing file
         for missing_file in missing_files:
-            st.error(f"Error: El archivo requerido {missing_file} no ha sido subido todavía, vuelva a la introducción y súbalo desde ahi.")
-        return  
+            st.error(
+                f"Error: El archivo requerido {missing_file} no ha sido subido todavía, vuelva a la introducción y súbalo desde ahi.")
+        return
+
 
 def show_finished():
     if st.session_state.main_page == 'Productores autorizados 2023':
@@ -356,7 +382,7 @@ def show_finished():
             """, unsafe_allow_html=True)
 
             st.table(stats_df)
-            
+
             cols = st.columns([1, 2, 1])
             with open(dataset_path, "rb") as file:
                 cols[1].download_button(
@@ -406,7 +432,7 @@ def show_finished():
             """, unsafe_allow_html=True)
             st.markdown("<br>", unsafe_allow_html=True)
             st.table(stats_df)
-            
+
             cols = st.columns([1, 2, 1])
             with open(dataset_path, "rb") as file:
                 cols[1].download_button(
@@ -424,7 +450,7 @@ def show_finished():
             st.markdown("<br>", unsafe_allow_html=True)
 
             cols = st.columns([1, 1, 1])
-            cols[1].image('docs/images/mottum.svg', use_column_width=True)# Colocar la imagen en la columna del medio
+            cols[1].image('docs/images/mottum.svg', use_column_width=True)  # Colocar la imagen en la columna del medio
 
 
 if __name__ == '__main__':
@@ -444,11 +470,16 @@ if __name__ == '__main__':
     if 'main_page' not in st.session_state:
         st.session_state.main_page = 'Productores autorizados 2023'
     with st.sidebar:
-        st.session_state.main_page = om('Main menu', ['Productores autorizados 2023', 'Beneficiarios fertilizantes 2023', 'Beneficiarios fertilizantes 2019-2022'], icons=["list-task", "list-task", "list-task"], menu_icon="cast")
+        st.session_state.main_page = om('Main menu',
+                                        ['Productores autorizados 2023', 'Beneficiarios fertilizantes 2023',
+                                         'Beneficiarios fertilizantes 2019-2022'],
+                                        icons=["list-task", "list-task", "list-task"], menu_icon="cast")
     if st.session_state.main_page == 'Productores autorizados 2023':
         if 'sub_page' not in st.session_state:
             st.session_state.sub_page = '1. Introducción'
-        st.session_state.sub_page = st.radio('Productores autorizados 2023', ['1. Introducción', '2. Descarga y Transformación', '3. Limpieza de datos', '4. Acceso a las tablas de resultados [.csv]'])
+        st.session_state.sub_page = st.radio('Productores autorizados 2023',
+                                             ['1. Introducción', '2. Descarga y Transformación', '3. Limpieza de datos',
+                                              '4. Acceso a las tablas de resultados [.csv]'])
         if st.session_state.sub_page == '1. Introducción':
             show_intro()
         elif st.session_state.sub_page == '2. Descarga y Transformación':
@@ -460,7 +491,10 @@ if __name__ == '__main__':
     elif st.session_state.main_page == 'Beneficiarios fertilizantes 2023':
         if 'second_sub_page' not in st.session_state:
             st.session_state.second_sub_page = '1. Introducción'
-        st.session_state.second_sub_page = st.radio('Beneficiarios fertilizantes 2023', ['1. Introducción', '2. Descarga y Transformación', '3. Limpieza de datos', '4. Acceso a las tablas de resultados [.csv]'])
+        st.session_state.second_sub_page = st.radio('Beneficiarios fertilizantes 2023',
+                                                    ['1. Introducción', '2. Descarga y Transformación',
+                                                     '3. Limpieza de datos',
+                                                     '4. Acceso a las tablas de resultados [.csv]'])
         if st.session_state.second_sub_page == '1. Introducción':
             show_intro()
         elif st.session_state.second_sub_page == '2. Descarga y Transformación':
@@ -472,7 +506,10 @@ if __name__ == '__main__':
     elif st.session_state.main_page == 'Beneficiarios fertilizantes 2019-2022':
         if 'third_sub_page' not in st.session_state:
             st.session_state.third_sub_page = '1. Introducción'
-        st.session_state.third_sub_page = st.radio('Beneficiarios fertilizantes 2019-2022', ['1. Introducción', '2. Descarga y Transformación', '3. Limpieza de datos', '4. Acceso a las tablas de resultados [.csv]'])
+        st.session_state.third_sub_page = st.radio('Beneficiarios fertilizantes 2019-2022',
+                                                   ['1. Introducción', '2. Descarga y Transformación',
+                                                    '3. Limpieza de datos',
+                                                    '4. Acceso a las tablas de resultados [.csv]'])
         if st.session_state.third_sub_page == '1. Introducción':
             show_intro()
         elif st.session_state.third_sub_page == '2. Descarga y Transformación':
@@ -501,17 +538,17 @@ if __name__ == '__main__':
     )
     # Initialize session state variables
     st.markdown(
-    """
-    <style>
-        [data-testid=stSidebar] [data-testid=stImage]{
-            text-align: center;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            width: 100%;
-        }
-    </style>
-    """, unsafe_allow_html=True
+        """
+        <style>
+            [data-testid=stSidebar] [data-testid=stImage]{
+                text-align: center;
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                width: 100%;
+            }
+        </style>
+        """, unsafe_allow_html=True
     )
 
     st.sidebar.markdown("<br>", unsafe_allow_html=True)
@@ -535,10 +572,9 @@ if __name__ == '__main__':
         '**Financiado por:**',
         unsafe_allow_html=True
     )
-    cols = st.columns([1, 1, 1]) 
-    
-    st.sidebar.image('docs/images/UNDP2.png', width=100)
+    cols = st.columns([1, 1, 1])
 
+    st.sidebar.image('docs/images/UNDP2.png', width=100)
 
     if 'button_pressed' not in st.session_state:
         st.session_state.button_pressed = False
