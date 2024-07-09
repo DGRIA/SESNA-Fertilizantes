@@ -3,6 +3,12 @@
 Esta herramienta digital forma parte de la Secretaría Ejecutiva del Sistema Nacional de Anticorrupción de la República
 de México https://www.sesna.gob.mx/
 
+El programa de Fertilizantes es un programa a nivel federal, gestionado y coordinado a nivel estatal. Para llevar un mejor control del impacto de este programa de ayudas sociales, que consiste en el reparto de ayudas de fertilizantes a los productores, se publica en el portal Datos.gob.mx un listado de productores autorizados y un listado de productores beneficiarios. (Ver portal de datos abiertos).
+
+El objetivo de la Secretaría Ejecutiva del Sistema Nacional de Anticorrupción (SESNA) es crear un padrón de beneficiarios que permita el análisis de este programa tratando cada Entidad, Municipio y Localidad por su código de INEGI.
+
+Los datasets de beneficiarios y productores autorizados disponen de la localización de los beneficiarios, sin embargos estos no siempres están codificados según el Catálogo Único de Claves de Áreas Geoestadísticas Estatales, Municipales y Localidades (https://www.inegi.org.mx/app/ageeml). El propósito final de este repositorio es estandarizar las claves de entidades, municipios y localidades según el Catálogo de Claves Únicas.
+
 ## Estructura del Proyecto
 
 Este proyecto está estructurado en varios directorios, cada uno con un propósito específico.
