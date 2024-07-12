@@ -21,6 +21,12 @@ Sus funciones son las siguientes:
 - `src/notebooks`: Contiene los Jupyter Notebooks.
 - `tests/`: Contiene los tests del proyecto.
 
+## Acceso a Datos :open_file_folder:
+:gear: **WIP**
+- Datos de descarga
+- Datos de acceso Drive
+- Datos de acceso Repositorio
+
 ## Ejecución Local :house: :computer:
 
 Se recomienda encarecidamente el uso de un entorno virtual para la ejecución de este proyecto.
