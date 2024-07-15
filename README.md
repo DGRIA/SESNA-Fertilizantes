@@ -104,8 +104,7 @@ pytest
 6. **Ejecución del proyecto**. Para ejecutar el proyecto, ejecute el siguiente comando:
 
 ```python
-streamlit
-main.py
+streamlit run main.py
 ```
 
 A continuación se mostrará un mensaje similar al siguiente:
@@ -135,20 +134,12 @@ git clone https://github.com/MottumData/SESNA-Fertilizantes.git
 cd SESNA-Fertilizantes
 ```
 
-3. **Construir la imagen de Docker**. Ejecute el siguiente comando:
+3. **Construir la imagen de Docker y levantar contenedor**. Ejecute el siguiente comando:
 
 ```bash
-docker build -t sesna-fertilizantes .
+docker compose up --build # -d para ejecutar en segundo plano
 ```
+Una vez ejecutado el contenedor de Docker, podrá acceder a las interfaces de usuario a través de los siguientes enlaces:
 
-4. **Levantar el contenedor de Docker**. Ejecute el siguiente comando:
-
-```bash
-docker run -p 8501:8501 8888:8888 sesna-fertilizantes
-```
-
-5. Opcional **Levantar el contendor de Docker en segundo plano**. Ejecute el siguiente comando:
-
-```bash
-docker run -d -p 8501:8501 -p 8888:8888 sesna-fertilizantes
-```
+Interfaz de Streamlit: http://localhost:8502/
+Jupyter Notebooks: http://localhost:8889/
