@@ -54,8 +54,11 @@ Sus funciones son las siguientes:
 - Datos de acceso Repositorio. Aquellos que se usan como herramienta dentro del proyecto. En este caso los diccionarios
   para cada entregable y los dataset de INEGI.
 
-> **Nota:** Para descargar los datos adjuntos en este repositorio es necesario ubicarse en el directorio del proyecto y ejecutar el siguiente comando: `git lfs pull`.
-
+> **Nota:** Para descargar los datos adjuntos en este repositorio es necesario ubicarse en el directorio del proyecto y
+> ejecutar el siguiente comando: `git lfs pull`.
+>
+> Normalmente LFS se instala automáticamente al clonar un repositorio que lo usa, pero si no es así, se puede instalar
+> siguiendo las instrucciones de la [documentación oficial](https://git-lfs.com/).
 
 ## Ejecución Local :house: :computer:
 
@@ -80,7 +83,7 @@ git clone https://github.com/MottumData/SESNA-Fertilizantes.git
 cd SESNA-Fertilizantes
 ```
 
-3. **Descargar datos del repositorio**
+3. **Descargar datos del repositorio**. (En caso de fallo, comprueba que tengas instalado git LFS, como se indica en Acceso a Datos)
 
 ```bash
 git lfs pull
