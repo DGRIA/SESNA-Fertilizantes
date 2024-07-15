@@ -3,11 +3,19 @@
 Esta herramienta digital forma parte de la Secretaría Ejecutiva del Sistema Nacional de Anticorrupción de la República
 de México https://www.sesna.gob.mx/
 
-El programa de Fertilizantes es un programa a nivel federal, gestionado y coordinado a nivel estatal. Para llevar un mejor control del impacto de este programa de ayudas sociales, que consiste en el reparto de ayudas de fertilizantes a los productores, se publica en el portal Datos.gob.mx un listado de productores autorizados y un listado de productores beneficiarios. (Ver portal de datos abiertos).
+El programa de Fertilizantes es un programa a nivel federal, gestionado y coordinado a nivel estatal. Para llevar un
+mejor control del impacto de este programa de ayudas sociales, que consiste en el reparto de ayudas de fertilizantes a
+los productores, se publica en el portal Datos.gob.mx un listado de productores autorizados y un listado de productores
+beneficiarios. (Ver portal de datos abiertos).
 
-El objetivo de la Secretaría Ejecutiva del Sistema Nacional de Anticorrupción (SESNA) es crear un padrón de beneficiarios que permita el análisis de este programa tratando cada Entidad, Municipio y Localidad por su código de INEGI.
+El objetivo de la Secretaría Ejecutiva del Sistema Nacional de Anticorrupción (SESNA) es crear un padrón de
+beneficiarios que permita el análisis de este programa tratando cada Entidad, Municipio y Localidad por su código de
+INEGI.
 
-Los datasets de beneficiarios y productores autorizados disponen de la localización de los beneficiarios, sin embargos estos no siempres están codificados según el Catálogo Único de Claves de Áreas Geoestadísticas Estatales, Municipales y Localidades (https://www.inegi.org.mx/app/ageeml). El propósito final de este repositorio es estandarizar las claves de entidades, municipios y localidades según el Catálogo de Claves Únicas.
+Los datasets de beneficiarios y productores autorizados disponen de la localización de los beneficiarios, sin embargos
+estos no siempres están codificados según el Catálogo Único de Claves de Áreas Geoestadísticas Estatales, Municipales y
+Localidades (https://www.inegi.org.mx/app/ageeml). El propósito final de este repositorio es estandarizar las claves de
+entidades, municipios y localidades según el Catálogo de Claves Únicas.
 
 ## Estructura del Proyecto
 
@@ -21,11 +29,36 @@ Sus funciones son las siguientes:
 - `src/notebooks`: Contiene los Jupyter Notebooks.
 - `tests/`: Contiene los tests del proyecto.
 
-## Acceso a Datos :open_file_folder:
-:gear: **WIP**
-- Datos de descarga
-- Datos de acceso Drive
-- Datos de acceso Repositorio
+### Estructura de la carpeta de datos
+
+- `inegi`. Contienen los datos de INEGI para cada año. El corte usado de cada año es el de Diciembre. A excepción
+  de `dataset_inegi.csv` que contiene los del último año y mes disponibles, en este caso es Abril de 2024.
+- `listados_completos`: Contiene los listados completos de beneficiarios y productores autorizados tras la corrección de
+  nombres. Así como los
+  beneficiarios de 2019-2023.
+- `productores_autorizados`. Contiene los listados de Productores Autorizados descargados directamente
+  desde [Secretaría de Agricultura y Desarrollo Rural](https://datos.gob.mx/busca/organization/agricultura) de
+  datos.gob.mx. Además, contiene los diccionarios Simple y Manual.
+- `productores_beneficiarios` Contiene los listados de Productores Beneficiarios descargados directamente
+  desde [Secretaría de Agricultura y Desarrollo Rural](https://datos.gob.mx/busca/organization/agricultura) de
+  datos.gob.mx. Además, contiene los diccionarios Simple y Manual.
+- `productores_beneficiarios 2019-2022` Contiene los listados de Productores Beneficiarios de 2019 a 2022
+  descargados directamente
+  desde [Secretaría de Agricultura y Desarrollo Rural](https://datos.gob.mx/busca/organization/agricultura) de
+  datos.gob.mx. Además, contiene los diccionarios Simple y Manual para cada año en un directorio adicional.
+
+### Acceso a Datos :open_file_folder:
+
+- Datos de descarga. Son aquellos que tienen automatizada la descarga. En este caso corresponden con los datos de
+  Listado de Beneficiarios de 2019 a 2023 y Productores Autorizados.
+- Datos de acceso Repositorio. Aquellos que se usan como herramienta dentro del proyecto. En este caso los diccionarios
+  para cada entregable y los dataset de INEGI.
+
+> **Nota:** Para descargar los datos adjuntos en este repositorio es necesario ubicarse en el directorio del proyecto y
+> ejecutar el siguiente comando: `git lfs pull`.
+>
+> Normalmente LFS se instala automáticamente al clonar un repositorio que lo usa, pero si no es así, se puede instalar
+> siguiendo las instrucciones de la [documentación oficial](https://git-lfs.com/).
 
 ## Ejecución Local :house: :computer:
 
@@ -50,23 +83,28 @@ git clone https://github.com/MottumData/SESNA-Fertilizantes.git
 cd SESNA-Fertilizantes
 ```
 
-3. **Instalar dependencias**. Para instalar las dependencias del proyecto, ejecute el siguiente comando:
+3. **Descargar datos del repositorio**. (En caso de fallo, comprueba que tengas instalado git LFS, como se indica en Acceso a Datos)
+
+```bash
+git lfs pull
+```
+
+4. **Instalar dependencias**. Para instalar las dependencias del proyecto, ejecute el siguiente comando:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-4. (Opcional) **Ejecutar test**. Para ejecutar los tests del proyecto, ejecute el siguiente comando:
+5. (Opcional) **Ejecutar test**. Para ejecutar los tests del proyecto, ejecute el siguiente comando:
 
 ```python
 pytest
 ```
 
-5. **Ejecución del proyecto**. Para ejecutar el proyecto, ejecute el siguiente comando:
+6. **Ejecución del proyecto**. Para ejecutar el proyecto, ejecute el siguiente comando:
 
 ```python
-streamlit
-main.py
+streamlit run main.py
 ```
 
 A continuación se mostrará un mensaje similar al siguiente:
@@ -96,19 +134,12 @@ git clone https://github.com/MottumData/SESNA-Fertilizantes.git
 cd SESNA-Fertilizantes
 ```
 
-3. **Construir la imagen de Docker**. Ejecute el siguiente comando:
+3. **Construir la imagen de Docker y levantar contenedor**. Ejecute el siguiente comando:
 
 ```bash
-docker build -t sesna-fertilizantes .
+docker compose up --build # -d para ejecutar en segundo plano
 ```
+Una vez ejecutado el contenedor de Docker, podrá acceder a las interfaces de usuario a través de los siguientes enlaces:
 
-4. **Levantar el contenedor de Docker**. Ejecute el siguiente comando:
-
-```bash
-docker run -p 8501:8501 8888:8888 sesna-fertilizantes
-```
-5. Opcional **Levantar el contendor de Docker en segundo plano**. Ejecute el siguiente comando:
-
-```bash
-docker run -d -p 8501:8501 -p 8888:8888 sesna-fertilizantes
-```
+Interfaz de Streamlit: http://localhost:8502/
+Jupyter Notebooks: http://localhost:8889/
