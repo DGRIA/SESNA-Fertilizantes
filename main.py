@@ -463,7 +463,7 @@ if __name__ == '__main__':
 
     st.markdown("<br>", unsafe_allow_html=True)
     # Sidebar
-    st.sidebar.image('docs/images/SESNA-logo.png', use_column_width=True)
+    st.sidebar.image('docs/images/SESNA2.png', use_column_width=True)
 
     st.sidebar.markdown("<br>", unsafe_allow_html=True)
 
