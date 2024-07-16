@@ -38,14 +38,14 @@ Sus funciones son las siguientes:
   beneficiarios de 2019-2023.
 - `productores_autorizados`. Contiene los listados de Productores Autorizados descargados directamente
   desde [Secretaría de Agricultura y Desarrollo Rural](https://datos.gob.mx/busca/organization/agricultura) de
-  datos.gob.mx. Además, contiene los diccionarios Simple y Manual.
+  [datos.gob.mx](https://www.datos.gob.mx). Además, contiene los diccionarios Simple y Manual.
 - `productores_beneficiarios` Contiene los listados de Productores Beneficiarios descargados directamente
   desde [Secretaría de Agricultura y Desarrollo Rural](https://datos.gob.mx/busca/organization/agricultura) de
-  datos.gob.mx. Además, contiene los diccionarios Simple y Manual.
+   [datos.gob.mx](https://www.datos.gob.mx). Además, contiene los diccionarios Simple y Manual.
 - `productores_beneficiarios 2019-2022` Contiene los listados de Productores Beneficiarios de 2019 a 2022
   descargados directamente
   desde [Secretaría de Agricultura y Desarrollo Rural](https://datos.gob.mx/busca/organization/agricultura) de
-  datos.gob.mx. Además, contiene los diccionarios Simple y Manual para cada año en un directorio adicional.
+  [datos.gob.mx](https://www.datos.gob.mx). Además, contiene los diccionarios Simple y Manual para cada año en un directorio adicional.
 
 ### Acceso a Datos :open_file_folder:
 
@@ -83,7 +83,7 @@ git clone https://github.com/MottumData/SESNA-Fertilizantes.git
 cd SESNA-Fertilizantes
 ```
 
-3. **Descargar datos del repositorio**. (En caso de fallo, comprueba que tengas instalado git LFS, como se indica en Acceso a Datos)
+3. **Descargar datos del repositorio**. (En caso de fallo, comprueba que tengas instalado git LFS, como se indica en [Acceso a Datos](#acceso-a-datos-open_file_folder))
 
 ```bash
 git lfs pull
@@ -118,8 +118,6 @@ A continuación se mostrará un mensaje similar al siguiente:
 
 ## Docker :whale:
 
-_Sección en Desarrollo_
-
 Para ejecutar el proyecto en un contenedor de Docker, ejecute los siguientes comandos:
 
 1. **Clonar el repositorio**. Desde un terminal con git instalado, ejecute el siguiente comando:
@@ -141,5 +139,5 @@ docker compose up --build # -d para ejecutar en segundo plano
 ```
 Una vez ejecutado el contenedor de Docker, podrá acceder a las interfaces de usuario a través de los siguientes enlaces:
 
-Interfaz de Streamlit: http://localhost:8502/
-Jupyter Notebooks: http://localhost:8889/
+- Interfaz de Streamlit: http://localhost:8502/
+- Jupyter Notebooks: http://localhost:8889/
