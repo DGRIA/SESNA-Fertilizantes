@@ -324,7 +324,13 @@ pyrightconfig.json
 !data/productores_beneficiarios/.gitkeep
 !data/productores_beneficiarios 2019-2022/.gitkeep
 !data/productores_beneficiarios 2019-2022/diccionarios_E3/.gitkeep
+!data/productores_beneficiarios 2019-2022/diccionarios_E3/2019/.gitkeep
+!data/productores_beneficiarios 2019-2022/diccionarios_E3/2020/.gitkeep
+!data/productores_beneficiarios 2019-2022/diccionarios_E3/2021/.gitkeep
+!data/productores_beneficiarios 2019-2022/diccionarios_E3/2022/.gitkeep
 !data/listados_completos/.gitkeep
+
+
 data/*
 
 
