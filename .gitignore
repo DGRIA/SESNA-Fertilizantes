@@ -319,13 +319,14 @@ pyrightconfig.json
 # MAC
 .DS_Store
 ## FOR THIS PROJECT (Provisional)
-data/*
 !data/.gitkeep
 !data/productores_autorizados/.gitkeep
 !data/productores_beneficiarios/.gitkeep
 !data/productores_beneficiarios 2019-2022/.gitkeep
 !data/productores_beneficiarios 2019-2022/diccionarios_E3/.gitkeep
 !data/listados_completos/.gitkeep
+data/*
+
 
 
 #data/productores_autorizados/*
