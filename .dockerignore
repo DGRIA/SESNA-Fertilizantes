@@ -139,11 +139,18 @@ dmypy.json
 # Mac
 .DS_Store
 
-# git
-.git/
-.gitignore
+## git
+#.git/
+#.gitignore
 # Mottum
 
 */logs/*
-!data/productores_no_autorizados/.gitkeep
-data/productores_autorizados/*
+!data/productores_autorizados/.gitkeep
+!data/productores_beneficiarios/.gitkeep
+!data/productores_beneficiarios 2019-2022/.gitkeep
+!data/productores_beneficiarios 2019-2022/diccionarios_E3/.gitkeep
+!data/inegi/info.txt
+!data/listados_completos/.gitkeep
+data/*
+
+
