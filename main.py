@@ -14,6 +14,8 @@ from src.scrape_urls import scrape_urls, scrape_xlsx
 from src.data_cleaning_and_merge_e3 import data_cleaning3
 from streamlit_option_menu import option_menu as om
 import requests
+from src.inegi_uniqueloc import generate_uniqueloc
+from src.data_cleaning_inegi import clean_inegi
 
 # Incluir estas líneas en cada script para registrar los logs
 logger = logging.getLogger("Fertilizantes")
@@ -149,6 +151,11 @@ def show_intro(page_id):
 
     st.markdown("<br>", unsafe_allow_html=True)
 
+    cols_button = st.columns([1, 1, 1])
+    if cols_button[1].button('Limpieza de Inegi/Generación de inegi_uniquelocs', key=f'start_process_button_{page_id}'):
+        generate_uniqueloc()
+        clean_inegi()
+
     uploaded_file = st.file_uploader(f"Suba el diccionario manual para empezar el proceso. {page_id}", key=f'file_uploader_intro_{page_id}')
     if uploaded_file is not None:
         # Check if the file is a CSV (or similar) before trying to read it
@@ -185,7 +192,6 @@ def start_process(page_id):
             data_download("https://datos.gob.mx/busca/dataset/programa-fertilizantes-2019",
                           "data/productores_beneficiarios 2019-2022")
         session_state_with_love_mottum('footer22')
-
 
 def data_download(url, download_destination_folder, progress_callback=None,
                   urls=[]):  # Exit the function if any required file is missing
@@ -420,7 +426,8 @@ def clean_data_screen(page_id, tab):
         elif tab == '2022':
             process_tab(listado_beneficiarios_2022, '2022')
 
-def show_finished():
+
+def show_finished(tab):
     if st.session_state.main_page == 'Productores autorizados 2023':
         dataset_path = "data/listado_productores_complete2023.csv"
         if os.path.exists(dataset_path):
@@ -527,6 +534,97 @@ def show_finished():
             cols = st.columns([1, 1, 1])
             cols[1].image('docs/images/mottum.svg', use_column_width=True)  # Colocar la imagen en la columna del medio
 
+    elif st.session_state.main_page == 'Beneficiarios fertilizantes 2019-2022':
+        if tab == '2019':
+            dataset_path = "data/listados_completos/listado_beneficiarios_2019_localidades.csv"
+        elif tab == '2020':
+            dataset_path = "data/listados_completos/listado_beneficiarios_2020_localidades.csv"
+        elif tab == '2021':
+            dataset_path = "data/listados_completos/listado_beneficiarios_2021_localidades.csv"
+        elif tab == '2022':
+            dataset_path = "data/listados_completos/listado_beneficiarios_2022_localidades.csv"
+        
+        if os.path.exists(dataset_path):
+            st.markdown("""
+            <style>
+            .centered {
+                text-align: center;
+                font-size: 20px; /* Adjust the size as needed */
+                font-weight: bold; /* Makes the text bold */
+                /* Add more styling as needed */
+            }
+            </style>
+            <div class="centered">¡El dataset está listo!</div>
+            """, unsafe_allow_html=True)
+            # Load dataset to calculate statistics
+            df = pd.read_csv(dataset_path)
+            # Calculate statistics
+            stats = {
+                'Número de filas': [df.shape[0]],
+                'Número de columnas': [df.shape[1]],
+                # Add more statistics here if needed
+            }
+            stats_df = pd.DataFrame(stats)
+            # Display statistics
+            st.markdown("""
+            <style>
+            .centered {
+                font-size: 15px; /* Adjust the size as needed */
+                font-weight: bold; /* Makes the text bold */
+                /* Add more styling as needed */
+            }
+            </style>
+            <div class="centered">Final dataset</div>
+            """, unsafe_allow_html=True)
+            st.markdown("<br>", unsafe_allow_html=True)
+            st.table(stats_df)
+
+            cols = st.columns([1, 2, 1])
+            if tab == '2019':
+                with open(dataset_path, "rb") as file:
+                    cols[1].download_button(
+                        label="Pulsa aquí para acceder al dataset completo.",
+                        data=file,
+                        file_name=f"listado_beneficiarios_{tab}_localidades.csv",
+                        mime="text/csv",
+                    )
+                session_state_with_love_mottum('footer8')
+            elif tab == '2020':
+                with open(dataset_path, "rb") as file:
+                    cols[1].download_button(
+                        label="Pulsa aquí para acceder al dataset completo.",
+                        data=file,
+                        file_name=f"listado_beneficiarios_{tab}_localidades.csv",
+                        mime="text/csv",
+                    )
+                session_state_with_love_mottum('footer9')
+            elif tab == '2021':
+                with open(dataset_path, "rb") as file:
+                    cols[1].download_button(
+                        label="Pulsa aquí para acceder al dataset completo.",
+                        data=file,
+                        file_name=f"listado_beneficiarios_{tab}_localidades.csv",
+                        mime="text/csv",
+                    )
+                session_state_with_love_mottum('footer10')
+            elif tab == '2022':
+                with open(dataset_path, "rb") as file:
+                    cols[1].download_button(
+                        label="Pulsa aquí para acceder al dataset completo.",
+                        data=file,
+                        file_name=f"listado_beneficiarios_{tab}_localidades.csv",
+                        mime="text/csv",
+                    )
+                session_state_with_love_mottum('footer11')
+
+        else:
+            st.markdown(
+                "<h2 style='text-align: center;'>Necesitas ejecutar el proceso antes de venir a esta pantalla.</h2>",
+                unsafe_allow_html=True)
+            st.markdown("<br>", unsafe_allow_html=True)
+
+            cols = st.columns([1, 1, 1])
+            cols[1].image('docs/images/mottum.svg', use_column_width=True)  # Colocar la imagen en la columna del medio
 
 if __name__ == '__main__':
     st.markdown('''
@@ -562,7 +660,7 @@ if __name__ == '__main__':
         elif st.session_state.sub_page == '3. Limpieza de datos':
             clean_data_screen(1, '0')
         elif st.session_state.sub_page == '4. Acceso a las tablas de resultados [.csv]':
-            show_finished()
+            show_finished('1')
     elif st.session_state.main_page == 'Beneficiarios fertilizantes 2023':
         if 'second_sub_page' not in st.session_state:
             st.session_state.second_sub_page = '1. Introducción'
@@ -577,7 +675,7 @@ if __name__ == '__main__':
         elif st.session_state.second_sub_page == '3. Limpieza de datos':
             clean_data_screen(2, '0')
         elif st.session_state.second_sub_page == '4. Acceso a las tablas de resultados [.csv]':
-            show_finished()
+            show_finished('2')
     elif st.session_state.main_page == 'Beneficiarios fertilizantes 2019-2022':
     # Crear pestañas para los años
         tabs = st.tabs(['2019', '2020', '2021', '2022'])
@@ -597,7 +695,7 @@ if __name__ == '__main__':
             elif st.session_state.third_sub_page_2019 == '3. Limpieza de datos':
                 clean_data_screen(3, '2019')
             elif st.session_state.third_sub_page_2019 == '4. Acceso a las tablas de resultados [.csv]':
-                show_finished()
+                show_finished('2019')
         
         with tabs[1]:
             st.subheader("Beneficiarios fertilizantes 2020")
@@ -614,7 +712,7 @@ if __name__ == '__main__':
             elif st.session_state.third_sub_page_2020 == '3. Limpieza de datos':
                 clean_data_screen(4, '2020')
             elif st.session_state.third_sub_page_2020 == '4. Acceso a las tablas de resultados [.csv]':
-                show_finished()
+                show_finished('2020')
         
         with tabs[2]:
             st.subheader("Beneficiarios fertilizantes 2021")
@@ -631,7 +729,7 @@ if __name__ == '__main__':
             elif st.session_state.third_sub_page_2021 == '3. Limpieza de datos':
                 clean_data_screen(5, '2021')
             elif st.session_state.third_sub_page_2021 == '4. Acceso a las tablas de resultados [.csv]':
-                show_finished()
+                show_finished('2021')
         
         with tabs[3]:
             st.subheader("Beneficiarios fertilizantes 2022")
@@ -648,7 +746,7 @@ if __name__ == '__main__':
             elif st.session_state.third_sub_page_2022 == '3. Limpieza de datos':
                 clean_data_screen(6, '2022')
             elif st.session_state.third_sub_page_2022 == '4. Acceso a las tablas de resultados [.csv]':
-                show_finished()
+                show_finished('2022')
 
     st.sidebar.markdown(
         """
