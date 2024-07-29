@@ -660,7 +660,7 @@ def data_cleaning3(dataset_inegi, dataset_benef, prefix):
         listado_beneficiarios_parte_I_localidades = pd.merge(listado_beneficiarios_parte_II, diccionario_LOC_22_simple, left_on="Municipio-loc-KEY",
                                          right_on="KEY_benef_loc", how='left', suffixes=('_benef', '_inegi'))
 
-        listado_beneficiarios_parte_I_localidades = listado_beneficiarios_parte_I_localidades.drop_duplicates()
+        listado_beneficiarios_parte_I_localidades.drop_duplicates(keep='first', inplace=True)
 
         print('listado_benef: ', listado_beneficiarios_parte_I_localidades.isna().sum())
 

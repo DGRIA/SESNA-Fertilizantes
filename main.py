@@ -278,14 +278,14 @@ def data_download(url, download_destination_folder, progress_callback=None,
 
         # Create a download button for the CSV file
         st.markdown(href, unsafe_allow_html=True)
-
-        logger.info("Fin de Ejecución")
-        st.write(
-            "Pasando archivos .xlsx a .csv... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado...")
-        convert_xlsx_to_csv_in_directory('data/productores_beneficiarios 2019-2022')
-        st.success(
-            "El proceso de descarga ha terminado. En la siguiente pestaña puede proceder con la limpieza de los datos."
-        )
+        if st.session_state.main_page == 'Productores beneficiarios 2019-2022':
+            logger.info("Fin de Ejecución")
+            st.write(
+                "Pasando archivos .xlsx a .csv... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado...")
+            convert_xlsx_to_csv_in_directory('data/productores_beneficiarios 2019-2022')
+            st.success(
+                "El proceso de descarga ha terminado. En la siguiente pestaña puede proceder con la limpieza de los datos."
+            )
 
 def process_tab(dataset, year):
     stats = {
