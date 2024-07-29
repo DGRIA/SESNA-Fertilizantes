@@ -16,6 +16,7 @@ from streamlit_option_menu import option_menu as om
 import requests
 from src.inegi_uniqueloc import generate_uniqueloc
 from src.data_cleaning_inegi import clean_inegi
+import time
 
 # Incluir estas líneas en cada script para registrar los logs
 logger = logging.getLogger("Fertilizantes")
@@ -93,6 +94,39 @@ def clear_directory(directory):
                 shutil.rmtree(file_path)
         except Exception as e:
             print(f'Failed to delete {file_path}. Reason: {e}')
+
+
+def upload_manually(page_id, tab):
+    if os.path.exists(f'data/productores_beneficiarios 2019-2022/diccionarios_E3/diccionario_LOC_{tab}_simple.csv'):
+        st.success(
+            "Hay un diccionario con los nombres de municipios validados. Si desea volver a ejecutar el "
+            "proceso, descarga a continuación el diccionario de localidades.")
+    else:
+        st.warning(
+            "Es necesrio subir el diccionario de localidades con los nombres de localidades validados para "
+            "poder continuar con el proceso.")
+
+    with open(f'data/productores_beneficiarios 2019-2022/diccionarios_E3/diccionario_LOC_{tab}.csv', "rb") as file:
+        st.markdown("Descargar diccionario de localidades para validar:")
+        cols = st.columns([2, 1, 2])
+        cols[1].download_button(
+            label="Descargar",
+            data=file,
+            file_name=f"diccionario_LOC_{tab}.csv",
+            mime="text/csv",
+        )
+
+    uploaded_file = st.file_uploader(f"Suba el diccionario manual para empezar el proceso.",
+                                     key=f'file_uploader_intro_{page_id}')
+    if uploaded_file is not None:
+        # Check if the file is a CSV (or similar) before trying to read it
+        if uploaded_file.name.endswith('.csv'):
+            # Directly save the uploaded file to avoid modifying its content
+            with open(os.path.join('data', f"diccionario_LOC_{tab}_simple.csv"), "wb") as f:
+                f.write(uploaded_file.getvalue())
+            st.success(f"El archivo {uploaded_file.name} ha sido subido con éxito.")
+        else:
+            st.error("¡El archivo tiene que ser un .csv para continuar con el proceso!")
 
 
 def data_cleaning_function(dataset, tab):
@@ -178,12 +212,24 @@ def show_intro(page_id):
             """
         ))
 
-    st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("<br>", unsafe_allow_html=True)
 
-    cols_button = st.columns([1, 1, 1])
-    if cols_button[1].button('Limpieza de Inegi/Generación de inegi_uniquelocs', key=f'start_process_button_{page_id}'):
-        clean_inegi()
-        generate_uniqueloc()
+        st.info("En este caso procedemos primero con la limpieza de los datasets de inegi "
+                "por un lado y la generación de datasets de inegi por estado, asegurese de "
+                "ejecutar este boton antes de proceder al siguiente paso.")
+
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        cols_button = st.columns([1, 1, 1])
+        if cols_button[1].button('Limpieza de Inegi/Generación de inegi_uniquelocs',
+                                 key=f'start_process_button_{page_id}'):
+            with st.spinner(
+                    'Ejecutando scripts... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado!'):
+                progress_bar = st.progress(0)
+                clean_inegi()
+                progress_bar.progress(1 / 2)
+                generate_uniqueloc()
+                progress_bar.progress(1 / 1)
 
     session_state_with_love_mottum('footer')
 
@@ -423,40 +469,14 @@ def clean_data_screen(page_id, tab):
             return
 
     elif st.session_state.main_page == 'Beneficiarios fertilizantes 2019-2022':
-        st.info(
-            "Para los años de 2019 a 2022, los diccionarios de municipios están correctos tras realizar el "
-            "FuzzyMerge. Sólo es necesario corregir el diccionario de localidades.")
         if tab == '2019':
-            if os.path.exists('data/productores_beneficiarios 2019-2022/diccionarios_E3/diccionario_LOC_19_simple.csv'):
-                st.success(
-                    "Hay un diccionario con los nombres de municipios validados. Si desea volver a ejecutar el "
-                    "proceso, descarga a continuación el diccionario de localidades.")
-            else:
-                st.warning(
-                    "Es necesrio subir el diccionario de localidades con los nombres de localidades validados para "
-                    "poder continuar con el proceso.")
-
-            with open('data/productores_beneficiarios 2019-2022/diccionarios_E3/diccionario_LOC_19.csv', "rb") as file:
-                st.markdown("Descargar diccionario de localidades para 2019 para validar:")
-                cols = st.columns([1, 1, 1])
-                cols[1].download_button(
-                    label="Descargar",
-                    data=file,
-                    file_name="diccionario_LOC_19.csv",
-                    mime="text/csv",
-                )
-
-            uploaded_file = st.file_uploader(f"Suba el diccionario manual para empezar el proceso.",
-                                             key=f'file_uploader_intro_{page_id}')
-            if uploaded_file is not None:
-                # Check if the file is a CSV (or similar) before trying to read it
-                if uploaded_file.name.endswith('.csv'):
-                    # Directly save the uploaded file to avoid modifying its content
-                    with open(os.path.join('data', "diccionario_LOC_19_simple.csv"), "wb") as f:
-                        f.write(uploaded_file.getvalue())
-                    st.success(f"El archivo {uploaded_file.name} ha sido subido con éxito.")
-                else:
-                    st.error("¡El archivo tiene que ser un .csv para continuar con el proceso!")
+            upload_manually(22, 19)
+        elif tab == '2020':
+            upload_manually(23, 20)
+        elif tab == '2021':
+            upload_manually(24, 21)
+        elif tab == '2022':
+            upload_manually(25, 22)
 
         required_files = [
             'data/dataset_inegi_2019.csv',
