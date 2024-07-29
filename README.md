@@ -37,14 +37,14 @@ Sus funciones son las siguientes:
   beneficiarios de 2019-2023.
 - `productores_autorizados`. Contiene los listados de Productores Autorizados descargados directamente
   desde [Secretaría de Agricultura y Desarrollo Rural](https://datos.gob.mx/busca/organization/agricultura) de
-  [datos.gob.mx](https://www.datos.gob.mx). Además, contiene los diccionarios Simple y Manual.
+  [datos.gob.mx](https://www.datos.gob.mx). Además, contiene los diccionarios.
 - `productores_beneficiarios` Contiene los listados de Productores Beneficiarios descargados directamente
   desde [Secretaría de Agricultura y Desarrollo Rural](https://datos.gob.mx/busca/organization/agricultura) de
-   [datos.gob.mx](https://www.datos.gob.mx). Además, contiene los diccionarios Simple y Manual.
+   [datos.gob.mx](https://www.datos.gob.mx). Además, contiene los diccionarios.
 - `productores_beneficiarios 2019-2022` Contiene los listados de Productores Beneficiarios de 2019 a 2022
   descargados directamente
   desde [Secretaría de Agricultura y Desarrollo Rural](https://datos.gob.mx/busca/organization/agricultura) de
-  [datos.gob.mx](https://www.datos.gob.mx). Además, contiene los diccionarios Simple y Manual para cada año en un directorio adicional.
+  [datos.gob.mx](https://www.datos.gob.mx). Además, contiene los diccionarios para cada año en un directorio adicional.
 
 ### Acceso a Datos :open_file_folder:
 

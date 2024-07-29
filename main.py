@@ -14,6 +14,9 @@ from src.scrape_urls import scrape_urls, scrape_xlsx
 from src.data_cleaning_and_merge_e3 import data_cleaning3
 from streamlit_option_menu import option_menu as om
 import requests
+from src.inegi_uniqueloc import generate_uniqueloc
+from src.data_cleaning_inegi import clean_inegi
+import time
 
 # Incluir estas líneas en cada script para registrar los logs
 logger = logging.getLogger("Fertilizantes")
@@ -93,6 +96,39 @@ def clear_directory(directory):
             print(f'Failed to delete {file_path}. Reason: {e}')
 
 
+def upload_manually(page_id, tab):
+    if os.path.exists(f'data/productores_beneficiarios 2019-2022/diccionarios_E3/diccionario_LOC_{tab}_simple.csv'):
+        st.success(
+            "Hay un diccionario con los nombres de municipios validados. Si desea volver a ejecutar el "
+            "proceso, descarga a continuación el diccionario de localidades.")
+    else:
+        st.warning(
+            "Es necesrio subir el diccionario de localidades con los nombres de localidades validados para "
+            "poder continuar con el proceso.")
+
+    with open(f'data/productores_beneficiarios 2019-2022/diccionarios_E3/diccionario_LOC_{tab}.csv', "rb") as file:
+        st.markdown("Descargar diccionario de localidades para validar:")
+        cols = st.columns([2, 1, 2])
+        cols[1].download_button(
+            label="Descargar",
+            data=file,
+            file_name=f"diccionario_LOC_{tab}.csv",
+            mime="text/csv",
+        )
+
+    uploaded_file = st.file_uploader(f"Suba el diccionario manual para empezar el proceso.",
+                                     key=f'file_uploader_intro_{page_id}')
+    if uploaded_file is not None:
+        # Check if the file is a CSV (or similar) before trying to read it
+        if uploaded_file.name.endswith('.csv'):
+            # Directly save the uploaded file to avoid modifying its content
+            with open(os.path.join('data', f"diccionario_LOC_{tab}_simple.csv"), "wb") as f:
+                f.write(uploaded_file.getvalue())
+            st.success(f"El archivo {uploaded_file.name} ha sido subido con éxito.")
+        else:
+            st.error("¡El archivo tiene que ser un .csv para continuar con el proceso!")
+
+
 def data_cleaning_function(dataset, tab):
     if dataset == 'Productores_autorizados_2023':
         data_cleaning()
@@ -102,24 +138,29 @@ def data_cleaning_function(dataset, tab):
         data_cleaning2()
         st.success(
             "El proceso de limpieza de datos ha terminado. En la siguiente pestaña puede proceder con la descarga de los datos estandarizados.")
-        
+
     elif dataset == 'Beneficiarios_fertilizantes_2019-2022':
         if tab == '2019':
-            data_cleaning3('data/inegi/dataset_inegi_clean_2019.csv', 'data/productores_beneficiarios 2019-2022/fertilizantes_2019.csv', 19)
+            data_cleaning3('data/inegi/dataset_inegi_clean_2019.csv',
+                           'data/productores_beneficiarios 2019-2022/fertilizantes_2019.csv', 19)
             st.success(
                 "El proceso de limpieza de datos ha terminado. En la siguiente pestaña puede proceder con la descarga de los datos estandarizados.")
         elif tab == '2020':
-            data_cleaning3('data/inegi/dataset_inegi_clean_2020.csv', 'data/productores_beneficiarios 2019-2022/listado_beneficiarios_fertilizantes_2020.csv', 20)
+            data_cleaning3('data/inegi/dataset_inegi_clean_2020.csv',
+                           'data/productores_beneficiarios 2019-2022/listado_beneficiarios_fertilizantes_2020.csv', 20)
             st.success(
                 "El proceso de limpieza de datos ha terminado. En la siguiente pestaña puede proceder con la descarga de los datos estandarizados.")
         elif tab == '2021':
-            data_cleaning3('data/inegi/dataset_inegi_clean_2021.csv', 'data/productores_beneficiarios 2019-2022/listado_beneficiarios_fertilizantes_2021.csv', 21)
+            data_cleaning3('data/inegi/dataset_inegi_clean_2021.csv',
+                           'data/productores_beneficiarios 2019-2022/listado_beneficiarios_fertilizantes_2021.csv', 21)
             st.success(
                 "El proceso de limpieza de datos ha terminado. En la siguiente pestaña puede proceder con la descarga de los datos estandarizados.")
         elif tab == '2022':
-            data_cleaning3('data/inegi/dataset_inegi_clean_2022.csv', 'data/productores_beneficiarios 2019-2022/listado_beneficiarios_fertilizantes_2022.csv', 22)
+            data_cleaning3('data/inegi/dataset_inegi_clean_2022.csv',
+                           'data/productores_beneficiarios 2019-2022/listado_beneficiarios_fertilizantes_2022.csv', 22)
             st.success(
                 "El proceso de limpieza de datos ha terminado. En la siguiente pestaña puede proceder con la descarga de los datos estandarizados.")
+
 
 def show_intro(page_id):
     if st.session_state.main_page == 'Productores autorizados 2023':
@@ -130,6 +171,18 @@ def show_intro(page_id):
                 publicadas en la siguiente URL: [Programa de Fertilizantes 2023 Listados Autorizados](https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-autorizados).
             """
         ))
+        uploaded_file = st.file_uploader(f"Suba el diccionario manual para empezar el proceso. {page_id}",
+                                         key=f'file_uploader_intro_{page_id}')
+        if uploaded_file is not None:
+            # Check if the file is a CSV (or similar) before trying to read it
+            if uploaded_file.name.endswith('.csv'):
+                # Directly save the uploaded file to avoid modifying its content
+                with open(os.path.join('data', uploaded_file.name), "wb") as f:
+                    f.write(uploaded_file.getvalue())
+                st.success(f"El archivo {uploaded_file.name} ha sido subido con éxito.")
+            else:
+                st.error("¡El archivo tiene que ser un .csv para continuar con el proceso!")
+
     elif st.session_state.main_page == 'Beneficiarios fertilizantes 2023':
         st.markdown((
             """
@@ -138,6 +191,18 @@ def show_intro(page_id):
                 publicadas en la siguiente URL: [Programa de Fertilizantes 2023 Beneficiarios Autorizados](https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-de-beneficiarios).
             """
         ))
+        uploaded_file = st.file_uploader(f"Suba el diccionario manual para empezar el proceso. {page_id}",
+                                         key=f'file_uploader_intro_{page_id}')
+        if uploaded_file is not None:
+            # Check if the file is a CSV (or similar) before trying to read it
+            if uploaded_file.name.endswith('.csv'):
+                # Directly save the uploaded file to avoid modifying its content
+                with open(os.path.join('data', uploaded_file.name), "wb") as f:
+                    f.write(uploaded_file.getvalue())
+                st.success(f"El archivo {uploaded_file.name} ha sido subido con éxito.")
+            else:
+                st.error("¡El archivo tiene que ser un .csv para continuar con el proceso!")
+
     elif st.session_state.main_page == 'Beneficiarios fertilizantes 2019-2022':
         st.markdown((
             """
@@ -147,18 +212,24 @@ def show_intro(page_id):
             """
         ))
 
-    st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("<br>", unsafe_allow_html=True)
 
-    uploaded_file = st.file_uploader(f"Suba el diccionario manual para empezar el proceso. {page_id}", key=f'file_uploader_intro_{page_id}')
-    if uploaded_file is not None:
-        # Check if the file is a CSV (or similar) before trying to read it
-        if uploaded_file.name.endswith('.csv'):
-            # Directly save the uploaded file to avoid modifying its content
-            with open(os.path.join('data', uploaded_file.name), "wb") as f:
-                f.write(uploaded_file.getvalue())
-            st.success(f"El archivo {uploaded_file.name} ha sido subido con éxito.")
-        else:
-            st.error("¡El archivo tiene que ser un .csv para continuar con el proceso!")
+        st.info("En este caso procedemos primero con la limpieza de los datasets de inegi "
+                "por un lado y la generación de datasets de inegi por estado, asegurese de "
+                "ejecutar este boton antes de proceder al siguiente paso.")
+
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        cols_button = st.columns([1, 1, 1])
+        if cols_button[1].button('Limpieza de Inegi/Generación de inegi_uniquelocs',
+                                 key=f'start_process_button_{page_id}'):
+            with st.spinner(
+                    'Ejecutando scripts... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado!'):
+                progress_bar = st.progress(0)
+                clean_inegi()
+                progress_bar.progress(1 / 2)
+                generate_uniqueloc()
+                progress_bar.progress(1 / 1)
 
     session_state_with_love_mottum('footer')
 
@@ -167,28 +238,28 @@ def start_process(page_id):
     if st.session_state.main_page == 'Productores autorizados 2023':
         cols_button = st.columns([1, 1, 1])
         if cols_button[1].button('Descargar Listado Autorizados2023.', key=f'start_process_button_{page_id}'):
-            data_download("https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-autorizados",
-                          "data/productores_autorizados")
+            data_download(
+                url="https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-autorizados",
+                download_destination_folder="data/productores_autorizados")
         session_state_with_love_mottum('footer1')
     elif st.session_state.main_page == 'Beneficiarios fertilizantes 2023':
         cols_button = st.columns([1, 1, 1])
         if cols_button[1].button('Descargar Listado Beneficiarios2023.', key=f'start_process_button_{page_id}'):
             data_download(
-                "https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-de-beneficiarios",
-                "data/productores_beneficiarios")
+                url="https://www.datos.gob.mx/busca/dataset/programa-de-fertilizantes-2023-listados-de-beneficiarios",
+                download_destination_folder="data/productores_beneficiarios")
         session_state_with_love_mottum('footer2')
     elif st.session_state.main_page == 'Beneficiarios fertilizantes 2019-2022':
         st.text("Es igual correr este proceso para 2019 que para 2022. Todos los datasets de los años")
         st.text("2019, 2020, 2021 y 2022 serán descargados desde cualquier pestaña de año.")
         cols_button = st.columns([1, 1, 1])
         if cols_button[1].button('Descargar Listado Beneficiarios2019-2022.', key=f'start_process_button_{page_id}'):
-            data_download("https://datos.gob.mx/busca/dataset/programa-fertilizantes-2019",
-                          "data/productores_beneficiarios 2019-2022")
+            data_download(download_destination_folder="data/productores_beneficiarios 2019-2022")
         session_state_with_love_mottum('footer22')
 
 
-def data_download(url, download_destination_folder, progress_callback=None,
-                  urls=[]):  # Exit the function if any required file is missing
+def data_download(download_destination_folder, url=None, progress_callback=None,
+                  urls=None):
     if not os.path.exists('data'):
         os.makedirs('data')
         print("Directory 'data' missing, creating data directory.")
@@ -268,18 +339,19 @@ def data_download(url, download_destination_folder, progress_callback=None,
         # Convert the DataFrame to a CSV file
         csv = dataset.to_csv(index=False)
         b64 = base64.b64encode(csv.encode()).decode()  # some strings <-> bytes conversions necessary here
-        href = f'<a href="data:file/csv;base64,{b64}" download="dataset.csv">Download CSV File</a>'
+        href = f'<a href="data:file/csv;base64,{b64}" download="dataset.csv">Estado de descargas de URL</a>'
 
         # Create a download button for the CSV file
         st.markdown(href, unsafe_allow_html=True)
+        if st.session_state.main_page == 'Beneficiarios fertilizantes 2019-2022':
+            logger.info("Fin de Ejecución")
+            st.write(
+                "Pasando archivos .xlsx a .csv... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado...")
+            convert_xlsx_to_csv_in_directory('data/productores_beneficiarios 2019-2022')
+            st.success(
+                "El proceso de descarga ha terminado. En la siguiente pestaña puede proceder con la limpieza de los datos."
+            )
 
-        logger.info("Fin de Ejecución")
-        st.write(
-            "Pasando archivos .xlsx a .csv... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado...")
-        convert_xlsx_to_csv_in_directory('data/productores_beneficiarios 2019-2022')
-        st.success(
-            "El proceso de descarga ha terminado. En la siguiente pestaña puede proceder con la limpieza de los datos."
-        )
 
 def process_tab(dataset, year):
     stats = {
@@ -287,7 +359,8 @@ def process_tab(dataset, year):
         f'Número de columnas_{year}': [dataset.shape[1]],
     }
     stats_df = pd.DataFrame(stats)
-    
+    stats_df.reset_index(drop=True, inplace=True)
+
     # Display statistics with custom styling
     st.markdown(f"""
     <style>
@@ -298,15 +371,18 @@ def process_tab(dataset, year):
     </style>
     <div class="centered">Current dataset for {year}</div>
     """, unsafe_allow_html=True)
-    
+    # TODO Quitar columna de Index
     st.table(stats_df)
-    
-    with st.spinner(f'Ejecutando scripts para {year}... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado!'):
+
+    with st.spinner(
+            f'Ejecutando scripts para {year}... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado!'):
         cols_button = st.columns([1, 1, 1])
-        if cols_button[1].button(f'Limpieza de datos de Listado Productores{year}.', key=f'start_cleaning_button{year}'):
+        if cols_button[1].button(f'Limpieza de datos de Listado Productores{year}.',
+                                 key=f'start_cleaning_button{year}'):
             data_cleaning_function(f'Beneficiarios_fertilizantes_2019-2022', year)
             # st.success("El proceso de limpieza de datos ha terminado. En la siguiente pestaña puede proceder con la descarga de los datos estandarizados.")
             session_state_with_love_mottum('footer4')
+
 
 def clean_data_screen(page_id, tab):
     if st.session_state.main_page == 'Productores autorizados 2023':
@@ -341,7 +417,8 @@ def clean_data_screen(page_id, tab):
                 'Ejecutando scripts... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado!'
         ):
             cols_button = st.columns([1, 1, 1])
-            if cols_button[1].button('Limpieza de datos de Listado Productores2023.', key=f'start_cleaning_button{page_id}'):
+            if cols_button[1].button('Limpieza de datos de Listado Productores2023.',
+                                     key=f'start_cleaning_button{page_id}'):
                 data_cleaning_function('productores_autorizados_2023', '3')
                 # st.success("El proceso de limpieza de datos ha terminado. En la siguiente pestaña puede proceder con la descarga de los datos estandarizados.")
             session_state_with_love_mottum('footer4')
@@ -377,7 +454,8 @@ def clean_data_screen(page_id, tab):
                 'Ejecutando scripts... Esto puede tardar unos minutos. No cambie de pestaña hasta que el proceso haya acabado!'
         ):
             cols_button = st.columns([1, 1, 1])
-            if cols_button[1].button('Limpieza de datos de Listado Beneficiarios2023.', key=f'start_cleaning_button{page_id}'):
+            if cols_button[1].button('Limpieza de datos de Listado Beneficiarios2023.',
+                                     key=f'start_cleaning_button{page_id}'):
                 data_cleaning_function('beneficiarios_fertilizantes_2023', '4')
             session_state_with_love_mottum('footer5')
 
@@ -389,8 +467,17 @@ def clean_data_screen(page_id, tab):
                 st.error(
                     f"Error: El archivo requerido {missing_file} no ha sido subido todavía, vuelva a la introducción y súbalo desde ahi.")
             return
-    
+
     elif st.session_state.main_page == 'Beneficiarios fertilizantes 2019-2022':
+        if tab == '2019':
+            upload_manually(22, 19)
+        elif tab == '2020':
+            upload_manually(23, 20)
+        elif tab == '2021':
+            upload_manually(24, 21)
+        elif tab == '2022':
+            upload_manually(25, 22)
+
         required_files = [
             'data/dataset_inegi_2019.csv',
             'data/dataset_inegi_2020.csv',
@@ -406,21 +493,24 @@ def clean_data_screen(page_id, tab):
             'data/productores_beneficiarios 2019-2022/diccionario_LOC_22_simple.csv'
         ]
 
-        listado_beneficiarios_2019 = pd.read_csv('data/productores_beneficiarios 2019-2022/fertilizantes_2019.csv')
-        listado_beneficiarios_2020 = pd.read_csv('data/productores_beneficiarios 2019-2022/listado_beneficiarios_fertilizantes_2020.csv')
-        listado_beneficiarios_2021 = pd.read_csv('data/productores_beneficiarios 2019-2022/listado_beneficiarios_fertilizantes_2021.csv')
-        listado_beneficiarios_2022 = pd.read_csv('data/productores_beneficiarios 2019-2022/listado_beneficiarios_fertilizantes_2022.csv')
-        
         if tab == '2019':
+            listado_beneficiarios_2019 = pd.read_csv('data/productores_beneficiarios 2019-2022/fertilizantes_2019.csv')
             process_tab(listado_beneficiarios_2019, '2019')
         elif tab == '2020':
+            listado_beneficiarios_2020 = pd.read_csv(
+                'data/productores_beneficiarios 2019-2022/listado_beneficiarios_fertilizantes_2020.csv')
             process_tab(listado_beneficiarios_2020, '2020')
         elif tab == '2021':
+            listado_beneficiarios_2021 = pd.read_csv(
+                'data/productores_beneficiarios 2019-2022/listado_beneficiarios_fertilizantes_2021.csv')
             process_tab(listado_beneficiarios_2021, '2021')
         elif tab == '2022':
+            listado_beneficiarios_2022 = pd.read_csv(
+                'data/productores_beneficiarios 2019-2022/listado_beneficiarios_fertilizantes_2022.csv')
             process_tab(listado_beneficiarios_2022, '2022')
 
-def show_finished():
+
+def show_finished(tab):
     if st.session_state.main_page == 'Productores autorizados 2023':
         dataset_path = "data/listado_productores_complete2023.csv"
         if os.path.exists(dataset_path):
@@ -527,6 +617,98 @@ def show_finished():
             cols = st.columns([1, 1, 1])
             cols[1].image('docs/images/mottum.svg', use_column_width=True)  # Colocar la imagen en la columna del medio
 
+    elif st.session_state.main_page == 'Beneficiarios fertilizantes 2019-2022':
+        if tab == '2019':
+            dataset_path = "data/listados_completos/listado_beneficiarios_2019_localidades.csv"
+        elif tab == '2020':
+            dataset_path = "data/listados_completos/listado_beneficiarios_2020_localidades.csv"
+        elif tab == '2021':
+            dataset_path = "data/listados_completos/listado_beneficiarios_2021_localidades.csv"
+        elif tab == '2022':
+            dataset_path = "data/listados_completos/listado_beneficiarios_2022_localidades.csv"
+
+        if os.path.exists(dataset_path):
+            st.markdown("""
+            <style>
+            .centered {
+                text-align: center;
+                font-size: 20px; /* Adjust the size as needed */
+                font-weight: bold; /* Makes the text bold */
+                /* Add more styling as needed */
+            }
+            </style>
+            <div class="centered">¡El dataset está listo!</div>
+            """, unsafe_allow_html=True)
+            # Load dataset to calculate statistics
+            df = pd.read_csv(dataset_path)
+            # Calculate statistics
+            stats = {
+                'Número de filas': [df.shape[0]],
+                'Número de columnas': [df.shape[1]],
+                # Add more statistics here if needed
+            }
+            stats_df = pd.DataFrame(stats)
+            # Display statistics
+            st.markdown("""
+            <style>
+            .centered {
+                font-size: 15px; /* Adjust the size as needed */
+                font-weight: bold; /* Makes the text bold */
+                /* Add more styling as needed */
+            }
+            </style>
+            <div class="centered">Final dataset</div>
+            """, unsafe_allow_html=True)
+            st.markdown("<br>", unsafe_allow_html=True)
+            st.table(stats_df)
+
+            cols = st.columns([1, 2, 1])
+            if tab == '2019':
+                with open(dataset_path, "rb") as file:
+                    cols[1].download_button(
+                        label="Pulsa aquí para acceder al dataset completo.",
+                        data=file,
+                        file_name=f"listado_beneficiarios_{tab}_localidades.csv",
+                        mime="text/csv",
+                    )
+                session_state_with_love_mottum('footer8')
+            elif tab == '2020':
+                with open(dataset_path, "rb") as file:
+                    cols[1].download_button(
+                        label="Pulsa aquí para acceder al dataset completo.",
+                        data=file,
+                        file_name=f"listado_beneficiarios_{tab}_localidades.csv",
+                        mime="text/csv",
+                    )
+                session_state_with_love_mottum('footer9')
+            elif tab == '2021':
+                with open(dataset_path, "rb") as file:
+                    cols[1].download_button(
+                        label="Pulsa aquí para acceder al dataset completo.",
+                        data=file,
+                        file_name=f"listado_beneficiarios_{tab}_localidades.csv",
+                        mime="text/csv",
+                    )
+                session_state_with_love_mottum('footer10')
+            elif tab == '2022':
+                with open(dataset_path, "rb") as file:
+                    cols[1].download_button(
+                        label="Pulsa aquí para acceder al dataset completo.",
+                        data=file,
+                        file_name=f"listado_beneficiarios_{tab}_localidades.csv",
+                        mime="text/csv",
+                    )
+                session_state_with_love_mottum('footer11')
+
+        else:
+            st.markdown(
+                "<h2 style='text-align: center;'>Necesitas ejecutar el proceso antes de venir a esta pantalla.</h2>",
+                unsafe_allow_html=True)
+            st.markdown("<br>", unsafe_allow_html=True)
+
+            cols = st.columns([1, 1, 1])
+            cols[1].image('docs/images/mottum.svg', use_column_width=True)  # Colocar la imagen en la columna del medio
+
 
 if __name__ == '__main__':
     st.markdown('''
@@ -562,7 +744,7 @@ if __name__ == '__main__':
         elif st.session_state.sub_page == '3. Limpieza de datos':
             clean_data_screen(1, '0')
         elif st.session_state.sub_page == '4. Acceso a las tablas de resultados [.csv]':
-            show_finished()
+            show_finished('1')
     elif st.session_state.main_page == 'Beneficiarios fertilizantes 2023':
         if 'second_sub_page' not in st.session_state:
             st.session_state.second_sub_page = '1. Introducción'
@@ -577,19 +759,19 @@ if __name__ == '__main__':
         elif st.session_state.second_sub_page == '3. Limpieza de datos':
             clean_data_screen(2, '0')
         elif st.session_state.second_sub_page == '4. Acceso a las tablas de resultados [.csv]':
-            show_finished()
+            show_finished('2')
     elif st.session_state.main_page == 'Beneficiarios fertilizantes 2019-2022':
-    # Crear pestañas para los años
+        # Crear pestañas para los años
         tabs = st.tabs(['2019', '2020', '2021', '2022'])
-        
+
         with tabs[0]:
             st.subheader("Beneficiarios fertilizantes 2019")
             if 'third_sub_page_2019' not in st.session_state:
                 st.session_state.third_sub_page_2019 = '1. Introducción'
             st.session_state.third_sub_page_2019 = st.radio('Beneficiarios fertilizantes 2019',
                                                             ['1. Introducción', '2. Descarga y Transformación',
-                                                            '3. Limpieza de datos',
-                                                            '4. Acceso a las tablas de resultados [.csv]'])
+                                                             '3. Limpieza de datos',
+                                                             '4. Acceso a las tablas de resultados [.csv]'])
             if st.session_state.third_sub_page_2019 == '1. Introducción':
                 show_intro(3)
             elif st.session_state.third_sub_page_2019 == '2. Descarga y Transformación':
@@ -597,16 +779,16 @@ if __name__ == '__main__':
             elif st.session_state.third_sub_page_2019 == '3. Limpieza de datos':
                 clean_data_screen(3, '2019')
             elif st.session_state.third_sub_page_2019 == '4. Acceso a las tablas de resultados [.csv]':
-                show_finished()
-        
+                show_finished('2019')
+
         with tabs[1]:
             st.subheader("Beneficiarios fertilizantes 2020")
             if 'third_sub_page_2020' not in st.session_state:
                 st.session_state.third_sub_page_2020 = '1. Introducción'
             st.session_state.third_sub_page_2020 = st.radio('Beneficiarios fertilizantes 2020',
                                                             ['1. Introducción', '2. Descarga y Transformación',
-                                                            '3. Limpieza de datos',
-                                                            '4. Acceso a las tablas de resultados [.csv]'])
+                                                             '3. Limpieza de datos',
+                                                             '4. Acceso a las tablas de resultados [.csv]'])
             if st.session_state.third_sub_page_2020 == '1. Introducción':
                 show_intro(4)
             elif st.session_state.third_sub_page_2020 == '2. Descarga y Transformación':
@@ -614,16 +796,16 @@ if __name__ == '__main__':
             elif st.session_state.third_sub_page_2020 == '3. Limpieza de datos':
                 clean_data_screen(4, '2020')
             elif st.session_state.third_sub_page_2020 == '4. Acceso a las tablas de resultados [.csv]':
-                show_finished()
-        
+                show_finished('2020')
+
         with tabs[2]:
             st.subheader("Beneficiarios fertilizantes 2021")
             if 'third_sub_page_2021' not in st.session_state:
                 st.session_state.third_sub_page_2021 = '1. Introducción'
             st.session_state.third_sub_page_2021 = st.radio('Beneficiarios fertilizantes 2021',
                                                             ['1. Introducción', '2. Descarga y Transformación',
-                                                            '3. Limpieza de datos',
-                                                            '4. Acceso a las tablas de resultados [.csv]'])
+                                                             '3. Limpieza de datos',
+                                                             '4. Acceso a las tablas de resultados [.csv]'])
             if st.session_state.third_sub_page_2021 == '1. Introducción':
                 show_intro(5)
             elif st.session_state.third_sub_page_2021 == '2. Descarga y Transformación':
@@ -631,16 +813,16 @@ if __name__ == '__main__':
             elif st.session_state.third_sub_page_2021 == '3. Limpieza de datos':
                 clean_data_screen(5, '2021')
             elif st.session_state.third_sub_page_2021 == '4. Acceso a las tablas de resultados [.csv]':
-                show_finished()
-        
+                show_finished('2021')
+
         with tabs[3]:
             st.subheader("Beneficiarios fertilizantes 2022")
             if 'third_sub_page_2022' not in st.session_state:
                 st.session_state.third_sub_page_2022 = '1. Introducción'
             st.session_state.third_sub_page_2022 = st.radio('Beneficiarios fertilizantes 2022',
                                                             ['1. Introducción', '2. Descarga y Transformación',
-                                                            '3. Limpieza de datos',
-                                                            '4. Acceso a las tablas de resultados [.csv]'])
+                                                             '3. Limpieza de datos',
+                                                             '4. Acceso a las tablas de resultados [.csv]'])
             if st.session_state.third_sub_page_2022 == '1. Introducción':
                 show_intro(6)
             elif st.session_state.third_sub_page_2022 == '2. Descarga y Transformación':
@@ -648,7 +830,7 @@ if __name__ == '__main__':
             elif st.session_state.third_sub_page_2022 == '3. Limpieza de datos':
                 clean_data_screen(6, '2022')
             elif st.session_state.third_sub_page_2022 == '4. Acceso a las tablas de resultados [.csv]':
-                show_finished()
+                show_finished('2022')
 
     st.sidebar.markdown(
         """
