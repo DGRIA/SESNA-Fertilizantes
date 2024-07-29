@@ -419,13 +419,14 @@ def data_cleaning3(dataset_inegi, dataset_benef, prefix):
         
         try:
             diccionario_LOC_20_simple = pd.read_csv('data/productores_beneficiarios 2019-2022/diccionarios_E3/diccionario_LOC_20_simple.csv', encoding='cp1252', 
-                                delimiter=',')
+                                delimiter=';')
             print(diccionario_LOC_20_simple.head())
         except pd.errors.ParserError as e:
             print("Error al leer el archivo CSV:", e)
 
+        print('diccionario: ', diccionario_LOC_20_simple.columns)
+
         diccionario_LOC_20_simple.rename(columns={'ï»¿KEY_benef_loc': 'KEY_benef_loc'}, inplace=True)
-        print('key: ',diccionario_LOC_20_simple.columns)
         print('here is the shape: ', listado_beneficiarios_2020_match.shape)
 
         listado_beneficiarios_2020_match['MUNICIPIO_Clean'] = listado_beneficiarios_2020_match['MUNICIPIO'].apply(clean_text_inegi)
@@ -434,11 +435,12 @@ def data_cleaning3(dataset_inegi, dataset_benef, prefix):
         # Create KEY in listado beneficiarios
         listado_beneficiarios_2020_match['Municipio-loc-KEY'] = listado_beneficiarios_2020_match['MUNICIPIO_Clean'].astype(str) + '-' + listado_beneficiarios_2020_match[
             'LOCALIDAD_Clean'].astype(str)
+        diccionario_LOC_20_simple.columns = diccionario_LOC_20_simple.columns.str.strip()
+
 
         print('lietsado: ', listado_beneficiarios_2020_match.shape)
         print('diccionario: ', diccionario_LOC_20_simple.columns)
-        listado_beneficiarios_parte_I_localidades = pd.merge(listado_beneficiarios_2020_match, diccionario_LOC_20_simple, left_on="Municipio-loc-KEY",
-                                         right_on="KEY_benef_loc", how='left', suffixes=('_benef', '_inegi'))
+        listado_beneficiarios_parte_I_localidades = pd.merge(listado_beneficiarios_2020_match, diccionario_LOC_20_simple, left_on="Municipio-loc-KEY", right_on="KEY_benef_loc", how='left', suffixes=('_benef', '_inegi'))
         
         listado_beneficiarios_parte_I_localidades.drop_duplicates(keep='first', inplace=True)
 
@@ -518,8 +520,8 @@ def data_cleaning3(dataset_inegi, dataset_benef, prefix):
         diccionario_LOC_21.to_csv('data/productores_beneficiarios 2019-2022/diccionarios_E3/diccionario_LOC_21.csv', index=False)
         
         try:
-            diccionario_LOC_21_simple = pd.read_csv('data/productores_beneficiarios 2019-2022/diccionarios_E3/diccionario_LOC_21_simple.csv', encoding='cp1252', 
-                                delimiter=',')
+            diccionario_LOC_21_simple = pd.read_csv('data/productores_beneficiarios 2019-2022/diccionarios_E3/diccionario_LOC_21_simple.csv', encoding='utf-8', 
+                                delimiter=';')
             print(diccionario_LOC_21_simple.head())
         except pd.errors.ParserError as e:
             print("Error al leer el archivo CSV:", e)
@@ -639,7 +641,7 @@ def data_cleaning3(dataset_inegi, dataset_benef, prefix):
         try:
             diccionario_LOC_22_simple = pd.read_csv('data/productores_beneficiarios 2019-2022/diccionarios_E3/diccionario_LOC_22_simple.csv', encoding='cp1252', 
                                 delimiter=';')
-            diccionario_LOC_22_simple.drop(columns=['ValidaciÃ³n', 'Propuesta'], inplace=True)
+            #diccionario_LOC_22_simple.drop(columns=['ValidaciÃ³n', 'Propuesta'], inplace=True)
             print(diccionario_LOC_22_simple.head())
         except pd.errors.ParserError as e:
             print("Error al leer el archivo CSV:", e)
@@ -658,7 +660,7 @@ def data_cleaning3(dataset_inegi, dataset_benef, prefix):
         listado_beneficiarios_parte_I_localidades = pd.merge(listado_beneficiarios_parte_II, diccionario_LOC_22_simple, left_on="Municipio-loc-KEY",
                                          right_on="KEY_benef_loc", how='left', suffixes=('_benef', '_inegi'))
 
-        listado_beneficiarios_parte_I_localidades = listado_beneficiarios_parte_I_localidades.drop_duplicates()
+        listado_beneficiarios_parte_I_localidades.drop_duplicates(keep='first', inplace=True)
 
         print('listado_benef: ', listado_beneficiarios_parte_I_localidades.isna().sum())
 
