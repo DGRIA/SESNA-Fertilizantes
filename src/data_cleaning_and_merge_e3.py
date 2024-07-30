@@ -166,6 +166,10 @@ def data_cleaning3(dataset_inegi, dataset_benef, prefix):
 
     cleaning_inegi()
 
+    dataset_inegi_clean['CVE_ENT'] = dataset_inegi_clean['CVE_ENT'].astype(str).str.zfill(2)
+    dataset_inegi_clean['CVE_MUN'] = dataset_inegi_clean['CVE_MUN'].astype(str).str.zfill(3)
+    dataset_inegi_clean['CVE_LOC'] = dataset_inegi_clean['CVE_LOC'].astype(str).str.zfill(4)
+
     # Obtenemos las localidades únicas en el dataset.
     Municipios = dataset_benef[['ENTIDAD', 'MUNICIPIO']]
     Municipios = Municipios.drop_duplicates()
