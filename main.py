@@ -274,8 +274,8 @@ def data_download(download_destination_folder, url=None, progress_callback=None,
         print(
             "Directory 'data/productores_beneficiarios 2019-2022' missing, creating data/productores_beneficiarios 2019-2022.")
 
-    clear_directory('data/productores_autorizados')
-    clear_directory('data/productores_beneficiarios')
+    # clear_directory('data/productores_autorizados')
+    # clear_directory('data/productores_beneficiarios')
 
     results = []
     datasets = []
