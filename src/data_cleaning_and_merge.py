@@ -21,7 +21,7 @@ def load_datasets(directory):
 
     # Print the number of rows for each DataFrame
     for i, df in enumerate(dataframes):
-        print(f"Number of rows in DataFrame {i+1}: {df.shape[0]}")
+        print(f"Number of rows in DataFrame {i + 1}: {df.shape[0]}")
 
     # Calculate the sum of rows in each individual dataset
     individual_row_sum = sum([df.shape[0] for df in dataframes])
@@ -72,24 +72,23 @@ def fuzzy_merge_prod(df_inegi, df_prod, key1, key2, threshold=96, limit=1):
 
     return df_merged
 
+
 # Crear una función para encontrar la mejor coincidencia difusa con límites entre 90 y 100 de coincidencia
 def fuzzy_merge_benef2023(df_benef, df_inegi, key1, key2, threshold=90, limit=1):
     s = df_inegi[key2].tolist()
-    
+
     # Encontrar las mejores coincidencias para cada clave en df_inegi
     matches = df_benef[key1].apply(lambda x: process.extractOne(x, s, score_cutoff=threshold))
 
-
     # Crear una columna con las mejores coincidencias
     df_benef['best_match'] = [match[0] if match else None for match in matches]
-    
+
     df_benef['match_score'] = [match[1] if match else None for match in matches]
-    
 
     # Hacer el merge con las mejores coincidencias
     df_merged = pd.merge(df_benef, df_inegi, left_on='best_match', right_on=key2, how='left',
                          suffixes=('_benef', '_inegi'))
-    
+
     return df_merged
 
 
@@ -106,8 +105,8 @@ def drop_duplicates(df):
 def save_to_csv(df, filename):
     df.to_csv(filename, index=False)
 
-def clean_inegi_data(dataset_inegi):
 
+def clean_inegi_data(dataset_inegi):
     COLUMNS_TO_DROP = ['MAPA', 'Estatus', 'NOM_ABR', 'CVE_LOC', 'NOM_LOC', 'AMBITO', 'LATITUD', 'LONGITUD',
                        'LAT_DECIMAL', 'LON_DECIMAL', 'ALTITUD', 'CVE_CARTA', 'POB_TOTAL',
                        'POB_MASCULINA', 'POB_FEMENINA', 'TOTAL DE VIVIENDAS HABITADAS']
@@ -130,6 +129,7 @@ def clean_inegi_data(dataset_inegi):
 
     return dataset_inegi_clean
 
+
 def clean_productores_and_benef_data(listado_productores=None, listado_beneficiarios=None):
     if listado_productores is not None:
         # Existing cleaning logic for productores
@@ -139,7 +139,8 @@ def clean_productores_and_benef_data(listado_productores=None, listado_beneficia
         Estados_productores['MUNICIPIO_Clean'] = Estados_productores['MUNICIPIO'].apply(clean_text)
         Estados_productores["ESTADO_Clean"] = Estados_productores["ESTADO_Clean"].astype(str)
         Estados_productores["MUNICIPIO_Clean"] = Estados_productores["MUNICIPIO_Clean"].astype(str)
-        Estados_productores["KEY_prod"] = Estados_productores["ESTADO_Clean"] + "-" + Estados_productores["MUNICIPIO_Clean"]
+        Estados_productores["KEY_prod"] = Estados_productores["ESTADO_Clean"] + "-" + Estados_productores[
+            "MUNICIPIO_Clean"]
 
         Estados_productores = Estados_productores.drop(['ESTADO', 'MUNICIPIO'], axis=1)
         Estados_productores = drop_duplicates(Estados_productores)
@@ -156,12 +157,14 @@ def clean_productores_and_benef_data(listado_productores=None, listado_beneficia
         Estados_beneficiarios['MUNICIPIO_Clean'] = Estados_beneficiarios['MUNICIPIO'].apply(clean_text)
         Estados_beneficiarios["ESTADO_Clean"] = Estados_beneficiarios["ESTADO_Clean"].astype(str)
         Estados_beneficiarios["MUNICIPIO_Clean"] = Estados_beneficiarios["MUNICIPIO_Clean"].astype(str)
-        Estados_beneficiarios["KEY_benef"] = Estados_beneficiarios["ESTADO_Clean"] + "-" + Estados_beneficiarios["MUNICIPIO_Clean"]
+        Estados_beneficiarios["KEY_benef"] = Estados_beneficiarios["ESTADO_Clean"] + "-" + Estados_beneficiarios[
+            "MUNICIPIO_Clean"]
 
         Estados_beneficiarios = Estados_beneficiarios.drop(['ESTADO', 'MUNICIPIO'], axis=1)
         Estados_beneficiarios = drop_duplicates(Estados_beneficiarios)
         # Additional logic for processing beneficiarios data...
         return Estados_beneficiarios
+
 
 def data_cleaning():
     path_dataset_inegi = 'data/dataset_inegi.csv'
@@ -176,12 +179,13 @@ def data_cleaning():
     }
     stats_df = pd.DataFrame(stats)
 
-    stats_df.to_csv('data/stats_iniciales_productores.csv', index=False)
+    stats_df.to_csv('data/productores_beneficiarios/stats_iniciales_productores.csv', index=False)
 
     dataset_inegi_clean = clean_inegi_data(dataset_inegi)
 
     # Solo las dos primeras columnas de lista_productores.
-    Estados_productores = clean_productores_and_benef_data(listado_productores = listado_productores, listado_beneficiarios=None)
+    Estados_productores = clean_productores_and_benef_data(listado_productores=listado_productores,
+                                                           listado_beneficiarios=None)
     # Primero creemos una columna clave en cada dataset -> INEGI
     dataset_inegi_clean["KEY_inegi"] = dataset_inegi_clean["NOM_ENT_Clean"] + "-" + dataset_inegi_clean["NOM_MUN_Clean"]
 
@@ -193,7 +197,7 @@ def data_cleaning():
     diccionario['CVE_MUN'] = diccionario['CVE_MUN'].astype(str)
     print(diccionario['CVE_ENT'].unique())
 
-    save_to_csv(diccionario, 'data/productores_autorizados/diccionarios_E1diccionario_prod.csv')
+    save_to_csv(diccionario, 'data/productores_autorizados/diccionario_prod.csv')
 
     # Crear una variable KEY en listado de productores y el diccionario para hacer el join
     listado_productores['ESTADO_Clean'] = listado_productores['ESTADO'].apply(clean_text)
@@ -201,11 +205,12 @@ def data_cleaning():
     listado_productores['Estado-mun-KEY'] = listado_productores['ESTADO_Clean'].astype(str) + '-' + listado_productores[
         'MUNICIPIO_Clean'].astype(str)
 
-    diccionario_manipulado = pd.read_csv('data/productores_autorizados/diccionarios_E1/diccionario_prod.csv', encoding='cp1252')
+    diccionario_manipulado = pd.read_csv('data/productores_autorizados/Diccionario_manual.csv', encoding='cp1252')
 
-    listado_productores_complete = pd.merge(listado_productores, diccionario_manipulado, left_on="Estado-mun-KEY", right_on="KEY_prod", how='left', suffixes=('_prod', '_inegi'))
+    listado_productores_complete = pd.merge(listado_productores, diccionario_manipulado, left_on="Estado-mun-KEY",
+                                            right_on="KEY_prod", how='left', suffixes=('_prod', '_inegi'))
 
-    #listado_productores_complete[['CVE_ENT', 'CVE_MUN']] = listado_productores_complete['CVE_MUN_Unique'].str.split('-',expand=True)
+    # listado_productores_complete[['CVE_ENT', 'CVE_MUN']] = listado_productores_complete['CVE_MUN_Unique'].str.split('-',expand=True)
     listado_productores_complete = listado_productores_complete[
         ['ESTADO', 'MUNICIPIO', 'NOM_MUN', 'NOM_ENT', 'CVE_ENT', 'CVE_MUN', 'ACUSE', 'APELLIDO PATERNO',
          'APELLIDO MATERNO', 'NOMBRE (S)', 'PAQUETE', 'KEY_prod']]
@@ -216,37 +221,38 @@ def data_cleaning():
     listado_productores_complete.loc[(listado_productores_complete['APELLIDO MATERNO'].isna()) & (
         listado_productores_complete['ACUSE'].notna()), 'APELLIDO MATERNO'] = 'unknown'
     listado_productores_complete.loc[
-        (listado_productores_complete['NOMBRE (S)'].isna()) & (listado_productores_complete['ACUSE'].notna()), 'NOMBRE (S)'] = 'unknown'
-    
+        (listado_productores_complete['NOMBRE (S)'].isna()) & (
+            listado_productores_complete['ACUSE'].notna()), 'NOMBRE (S)'] = 'unknown'
+
     listado_productores_complete = listado_productores_complete.astype({
-    'ESTADO': 'str',
-    'MUNICIPIO': 'str',
-    'ACUSE': 'str',
-    'APELLIDO PATERNO': 'str',
-    'APELLIDO MATERNO': 'str',
-    'NOMBRE (S)': 'str',
-    'PAQUETE': 'int',
-    'NOM_MUN': 'str',
-    'NOM_ENT': 'str',
-    'CVE_MUN': 'str',
-    'CVE_ENT': 'str',
-    'KEY_prod': 'str'
+        'ESTADO': 'str',
+        'MUNICIPIO': 'str',
+        'ACUSE': 'str',
+        'APELLIDO PATERNO': 'str',
+        'APELLIDO MATERNO': 'str',
+        'NOMBRE (S)': 'str',
+        'PAQUETE': 'int',
+        'NOM_MUN': 'str',
+        'NOM_ENT': 'str',
+        'CVE_MUN': 'str',
+        'CVE_ENT': 'str',
+        'KEY_prod': 'str'
 
     })
 
     listado_productores_complete = listado_productores_complete.rename(columns={
-    'ESTADO': 'estado1',
-    'MUNICIPIO': 'municipio1',
-    'ACUSE': 'acuse',
-    'APELLIDO PATERNO': 'apellido_paterno',
-    'APELLIDO MATERNO': 'apellido_materno',
-    'NOMBRE (S)': 'nombre_propio',
-    'PAQUETE': 'paquete',
-    'NOM_MUN': 'municipio',
-    'NOM_ENT': 'entidad',
-    'CVE_MUN': 'cve_mun',
-    'CVE_ENT': 'cve_ent',
-    'KEY_prod': 'key_prod'
+        'ESTADO': 'estado1',
+        'MUNICIPIO': 'municipio1',
+        'ACUSE': 'acuse',
+        'APELLIDO PATERNO': 'apellido_paterno',
+        'APELLIDO MATERNO': 'apellido_materno',
+        'NOMBRE (S)': 'nombre_propio',
+        'PAQUETE': 'paquete',
+        'NOM_MUN': 'municipio',
+        'NOM_ENT': 'entidad',
+        'CVE_MUN': 'cve_mun',
+        'CVE_ENT': 'cve_ent',
+        'KEY_prod': 'key_prod'
     })
 
     listado_productores_complete = listado_productores_complete.drop(columns=['estado1', 'municipio1'])
@@ -254,13 +260,15 @@ def data_cleaning():
     listado_productores_complete['id'] = listado_productores_complete.index
 
     # Assuming df is your DataFrame
-    ordered_columns = ['id', 'cve_ent', 'entidad', 'cve_mun', 'municipio', 'acuse', 'apellido_paterno', 'apellido_materno', 'nombre_propio', 'paquete', 'key_prod']
+    ordered_columns = ['id', 'cve_ent', 'entidad', 'cve_mun', 'municipio', 'acuse', 'apellido_paterno',
+                       'apellido_materno', 'nombre_propio', 'paquete', 'key_prod']
     listado_productores_complete = listado_productores_complete.reindex(columns=ordered_columns)
-    
+
     listado_productores_complete['cve_ent'] = listado_productores_complete['cve_ent'].str.zfill(2)
     listado_productores_complete['cve_mun'] = listado_productores_complete['cve_mun'].str.zfill(3)
 
-    save_to_csv(listado_productores_complete, 'data/listado_productores_complete2023.csv')
+    save_to_csv(listado_productores_complete, 'data/listados_completos/listado_productores_complete2023.csv')
+
 
 def data_cleaning2():
     path_dataset_inegi = 'data/dataset_inegi.csv'
@@ -270,7 +278,8 @@ def data_cleaning2():
 
     dataset_inegi_clean = clean_inegi_data(dataset_inegi)
 
-    Estados_beneficiarios = clean_productores_and_benef_data(listado_productores=None, listado_beneficiarios=listado_beneficiarios)
+    Estados_beneficiarios = clean_productores_and_benef_data(listado_productores=None,
+                                                             listado_beneficiarios=listado_beneficiarios)
 
     dataset_inegi_clean["KEY_inegi"] = dataset_inegi_clean["NOM_ENT_Clean"] + "-" + dataset_inegi_clean["NOM_MUN_Clean"]
 
@@ -287,63 +296,74 @@ def data_cleaning2():
 
     diccionario.drop_duplicates(subset=['KEY_benef'], inplace=True)
 
-    save_to_csv(diccionario, 'data/productores_beneficiarios/diccionarios_E2/diccionario_benef_E2.csv')
+    save_to_csv(diccionario, 'data/productores_beneficiarios/diccionario_benef.csv')
 
     listado_beneficiarios['ESTADO_Clean'] = listado_beneficiarios['ESTADO'].apply(clean_text)
     listado_beneficiarios['MUNICIPIO_Clean'] = listado_beneficiarios['MUNICIPIO'].apply(clean_text)
-    listado_beneficiarios['Estado-mun-KEY'] = listado_beneficiarios['ESTADO_Clean'].astype(str) + '-' + listado_beneficiarios['MUNICIPIO_Clean'].astype(str)
+    listado_beneficiarios['Estado-mun-KEY'] = listado_beneficiarios['ESTADO_Clean'].astype(str) + '-' + \
+                                              listado_beneficiarios['MUNICIPIO_Clean'].astype(str)
 
-    diccionario_verificado_simple = pd.read_csv('data/Diccionario_Simple.csv')
+    diccionario_verificado_simple = pd.read_csv('data/productores_beneficiarios/Diccionario_Simple.csv')
 
-    listado_beneficiarios_parte_I = pd.merge(listado_beneficiarios, diccionario_verificado_simple, left_on="Estado-mun-KEY", right_on="KEY_benef", how='left', suffixes=('_benef', '_inegi'))
-    listado_beneficiarios_parte_II = pd.merge(listado_beneficiarios_parte_I, dataset_inegi_clean, left_on="KEY_benef_Verificado", right_on="KEY_inegi", how='left', suffixes=('_benef', '_inegi'))
-    listado_beneficiarios_parte_II = listado_beneficiarios_parte_II.drop_duplicates(subset = ['ACUSE ESTATAL'],keep = 'first')
-    listado_beneficiarios_parte_II = listado_beneficiarios_parte_II[['ESTADO', 'MUNICIPIO', 'ACUSE ESTATAL', 'APELLIDO PATERNO', 'APELLIDO MATERNO','NOMBRE (S)', 'PAQUETE', 'KEY_benef_Verificado', 'NOM_ENT', 'NOM_MUN', 'CVE_ENT', 'CVE_MUN']]
+    listado_beneficiarios_parte_I = pd.merge(listado_beneficiarios, diccionario_verificado_simple,
+                                             left_on="Estado-mun-KEY", right_on="KEY_benef", how='left',
+                                             suffixes=('_benef', '_inegi'))
+    listado_beneficiarios_parte_II = pd.merge(listado_beneficiarios_parte_I, dataset_inegi_clean,
+                                              left_on="KEY_benef_Verificado", right_on="KEY_inegi", how='left',
+                                              suffixes=('_benef', '_inegi'))
+    listado_beneficiarios_parte_II = listado_beneficiarios_parte_II.drop_duplicates(subset=['ACUSE ESTATAL'],
+                                                                                    keep='first')
+    listado_beneficiarios_parte_II = listado_beneficiarios_parte_II[
+        ['ESTADO', 'MUNICIPIO', 'ACUSE ESTATAL', 'APELLIDO PATERNO', 'APELLIDO MATERNO', 'NOMBRE (S)', 'PAQUETE',
+         'KEY_benef_Verificado', 'NOM_ENT', 'NOM_MUN', 'CVE_ENT', 'CVE_MUN']]
 
     listado_beneficiarios_parte_II = listado_beneficiarios_parte_II.astype({
-    'ESTADO': 'str',
-    'MUNICIPIO': 'str',
-    'ACUSE ESTATAL': 'str',
-    'APELLIDO PATERNO': 'str',
-    'APELLIDO MATERNO': 'str',
-    'NOMBRE (S)': 'str',
-    'NOM_MUN': 'str',
-    'NOM_ENT': 'str',
-    'CVE_MUN': 'str',
-    'CVE_ENT': 'str',
-    'KEY_benef_Verificado': 'str'
+        'ESTADO': 'str',
+        'MUNICIPIO': 'str',
+        'ACUSE ESTATAL': 'str',
+        'APELLIDO PATERNO': 'str',
+        'APELLIDO MATERNO': 'str',
+        'NOMBRE (S)': 'str',
+        'NOM_MUN': 'str',
+        'NOM_ENT': 'str',
+        'CVE_MUN': 'str',
+        'CVE_ENT': 'str',
+        'KEY_benef_Verificado': 'str'
 
     })
 
     listado_beneficiarios_parte_II = listado_beneficiarios_parte_II.rename(columns={
-    'ESTADO': 'estado1',
-    'MUNICIPIO': 'municipio1',
-    'ACUSE ESTATAL': 'acuse',
-    'APELLIDO PATERNO': 'apellido_paterno',
-    'APELLIDO MATERNO': 'apellido_materno',
-    'NOMBRE (S)': 'nombre_propio',
-    'PAQUETE': 'paquete',
-    'NOM_MUN': 'municipio',
-    'NOM_ENT': 'entidad',
-    'CVE_MUN': 'cve_mun',
-    'CVE_ENT': 'cve_ent',
-    'KEY_benef_Verificado': 'key_benef_verificado'
+        'ESTADO': 'estado1',
+        'MUNICIPIO': 'municipio1',
+        'ACUSE ESTATAL': 'acuse',
+        'APELLIDO PATERNO': 'apellido_paterno',
+        'APELLIDO MATERNO': 'apellido_materno',
+        'NOMBRE (S)': 'nombre_propio',
+        'PAQUETE': 'paquete',
+        'NOM_MUN': 'municipio',
+        'NOM_ENT': 'entidad',
+        'CVE_MUN': 'cve_mun',
+        'CVE_ENT': 'cve_ent',
+        'KEY_benef_Verificado': 'key_benef_verificado'
     })
 
     listado_beneficiarios_parte_II = listado_beneficiarios_parte_II.drop(columns=['estado1', 'municipio1'])
 
     listado_beneficiarios_parte_II['id'] = listado_beneficiarios_parte_II.index
     # Assuming df is your DataFrame
-    ordered_columns = ['id', 'cve_ent', 'entidad', 'cve_mun', 'municipio', 'acuse', 'apellido_paterno', 'apellido_materno', 'nombre_propio', 'paquete', 'key_benef_verificado']
+    ordered_columns = ['id', 'cve_ent', 'entidad', 'cve_mun', 'municipio', 'acuse', 'apellido_paterno',
+                       'apellido_materno', 'nombre_propio', 'paquete', 'key_benef_verificado']
     listado_beneficiarios_parte_II = listado_beneficiarios_parte_II.reindex(columns=ordered_columns)
-    
+
     listado_beneficiarios_parte_II['cve_ent'] = listado_beneficiarios_parte_II['cve_ent'].str.zfill(2)
     listado_beneficiarios_parte_II['cve_mun'] = listado_beneficiarios_parte_II['cve_mun'].str.zfill(3)
 
-    listado_beneficiarios_parte_II.to_csv('data/LISTADO_BENEFICIARIOS2023_COMPLETO.csv', index=False)
+    listado_beneficiarios_parte_II.to_csv('data/listados_completos/listado_de_beneficiarios_2023.csv', index=False)
+
 
 def main():
     data_cleaning2()
-    
+
+
 if __name__ == "__main__":
     main()
