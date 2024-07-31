@@ -182,7 +182,7 @@ def data_cleaning():
     }
     stats_df = pd.DataFrame(stats)
 
-    stats_df.to_csv('data/productores_autorizados/diccionarios_e1/stats_iniciales_productores.csv', index=False)
+    stats_df.to_csv('data/productores_autorizados/diccionarios_E1/stats_iniciales_productores.csv', index=False)
 
     dataset_inegi_clean = clean_inegi_data(dataset_inegi)
 
@@ -202,7 +202,7 @@ def data_cleaning():
     diccionario['CVE_MUN'] = diccionario['CVE_MUN'].astype(str)
     print(diccionario['CVE_ENT'].unique())
 
-    save_to_csv(diccionario, 'data/productores_autorizados/diccionarios_e1/diccionario_prod.csv')
+    save_to_csv(diccionario, 'data/productores_autorizados/diccionarios_E1/diccionario_prod.csv')
 
     # Crear una variable KEY en listado de productores y el diccionario para hacer el join
     listado_productores['ESTADO_Clean'] = listado_productores['ESTADO'].apply(clean_text)
@@ -212,9 +212,9 @@ def data_cleaning():
     
     diccionario_Sin_VC = diccionario[diccionario["NOM_ENT"] != "Veracruz de Ignacio de la Llave"]
     
-    diccionario_Sin_VC.to_csv('data/productores_autorizados/diccionarios_e1/diccionario_prod_sin_VERACRUZ.csv', index=False)
+    diccionario_Sin_VC.to_csv('data/productores_autorizados/diccionarios_E1/diccionario_prod_sin_VERACRUZ.csv', index=False)
 
-    diccionario_manipulado = pd.read_csv('data/productores_autorizados/diccionarios_e1/diccionario_prod_sin_VERACRUZ.csv')
+    diccionario_manipulado = pd.read_csv('data/productores_autorizados/diccionarios_E1/diccionario_prod_sin_VERACRUZ.csv')
 
     listado_productores_complete = pd.merge(listado_productores, diccionario_manipulado, left_on="Estado-mun-KEY",
                                             right_on="KEY_prod", how='left', suffixes=('_prod', '_inegi'))

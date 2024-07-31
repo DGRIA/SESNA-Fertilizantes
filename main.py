@@ -388,11 +388,11 @@ def process_tab(dataset, year):
 def clean_data_screen(page_id, tab):
     if st.session_state.main_page == 'Productores autorizados 2023':
         required_files = [
-            'data/diccionarios_e1/dataset_inegi.csv',
-            'data/diccionarios_e2/Diccionario_manual.csv'
+            'data/inegi/dataset_inegi.csv',
+            'data/productores_beneficiarios/diccionarios_E2/Diccionario_manual.csv'
         ]
 
-        with open(f'data/productores_autorizados/diccionarios_e1/diccionario_prod_sin_VERACRUZ.csv', "rb") as file:
+        with open(f'data/productores_autorizados/diccionarios_E1/diccionario_prod_sin_VERACRUZ.csv', "rb") as file:
             st.markdown("Descargar diccionario de localidades para validar:")
             cols = st.columns([2, 1, 2])
             cols[1].download_button(
