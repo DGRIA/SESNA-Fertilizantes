@@ -16,21 +16,24 @@ def load_datasets(directory):
     # Get a list of all CSV files in the directory
     csv_files = glob.glob(os.path.join(directory, '*.csv'))
 
-    # Read each CSV file and store the DataFrame in a list
-    dataframes = [pd.read_csv(file, encoding='cp1252', index_col=0, skiprows=1) for file in csv_files]
-
-    # Print the number of rows for each DataFrame
-    for i, df in enumerate(dataframes):
-        print(f"Number of rows in DataFrame {i + 1}: {df.shape[0]}")
-
-    # Calculate the sum of rows in each individual dataset
-    individual_row_sum = sum([df.shape[0] for df in dataframes])
+    dataframes = []
+    for file in csv_files:
+        try:
+            # Try to read the CSV file with cp1252 encoding
+            df = pd.read_csv(file, encoding='cp1252', index_col=0, skiprows=1)
+        except UnicodeDecodeError:
+            # If it fails, try to read the CSV file with utf-8 encoding
+            df = pd.read_csv(file, encoding='utf-8', index_col=0, skiprows=1)
+        
+        # Print the columns of the current DataFrame
+        print(f"Columns in {file}: {df.columns.tolist()}")
+        
+        dataframes.append(df)
 
     # Concatenate all DataFrames in the list
-    merged_df = pd.concat(dataframes, join='inner', ignore_index=True)
+    merged_df = pd.concat(dataframes, ignore_index=True)
 
-    return merged_df, individual_row_sum
-
+    return merged_df
 
 def clean_text(text):
     """
@@ -167,10 +170,10 @@ def clean_productores_and_benef_data(listado_productores=None, listado_beneficia
 
 
 def data_cleaning():
-    path_dataset_inegi = 'data/dataset_inegi.csv'
+    path_dataset_inegi = 'data/inegi/dataset_inegi.csv'
     dataset_inegi = pd.read_csv(path_dataset_inegi, encoding='cp1252')
 
-    listado_productores, rowSum = load_datasets('data/productores_autorizados/')
+    listado_productores = load_datasets('data/productores_autorizados')
 
     stats = {
         'Número de filas': [listado_productores.shape[0]],
@@ -179,9 +182,11 @@ def data_cleaning():
     }
     stats_df = pd.DataFrame(stats)
 
-    stats_df.to_csv('data/productores_beneficiarios/stats_iniciales_productores.csv', index=False)
+    stats_df.to_csv('data/productores_autorizados/diccionarios_e1/stats_iniciales_productores.csv', index=False)
 
     dataset_inegi_clean = clean_inegi_data(dataset_inegi)
+
+    listado_productores = listado_productores.drop(columns=['Unnamed: 8', 'Unnamed: 9', 'Unnamed: 10'])
 
     # Solo las dos primeras columnas de lista_productores.
     Estados_productores = clean_productores_and_benef_data(listado_productores=listado_productores,
@@ -197,15 +202,19 @@ def data_cleaning():
     diccionario['CVE_MUN'] = diccionario['CVE_MUN'].astype(str)
     print(diccionario['CVE_ENT'].unique())
 
-    save_to_csv(diccionario, 'data/productores_autorizados/diccionario_prod.csv')
+    save_to_csv(diccionario, 'data/productores_autorizados/diccionarios_e1/diccionario_prod.csv')
 
     # Crear una variable KEY en listado de productores y el diccionario para hacer el join
     listado_productores['ESTADO_Clean'] = listado_productores['ESTADO'].apply(clean_text)
     listado_productores['MUNICIPIO_Clean'] = listado_productores['MUNICIPIO'].apply(clean_text)
     listado_productores['Estado-mun-KEY'] = listado_productores['ESTADO_Clean'].astype(str) + '-' + listado_productores[
         'MUNICIPIO_Clean'].astype(str)
+    
+    diccionario_Sin_VC = diccionario[diccionario["NOM_ENT"] != "Veracruz de Ignacio de la Llave"]
+    
+    diccionario_Sin_VC.to_csv('data/productores_autorizados/diccionarios_e1/diccionario_prod_sin_VERACRUZ.csv', index=False)
 
-    diccionario_manipulado = pd.read_csv('data/productores_autorizados/Diccionario_manual.csv', encoding='cp1252')
+    diccionario_manipulado = pd.read_csv('data/productores_autorizados/diccionarios_e1/diccionario_prod_sin_VERACRUZ.csv')
 
     listado_productores_complete = pd.merge(listado_productores, diccionario_manipulado, left_on="Estado-mun-KEY",
                                             right_on="KEY_prod", how='left', suffixes=('_prod', '_inegi'))
@@ -271,10 +280,10 @@ def data_cleaning():
 
 
 def data_cleaning2():
-    path_dataset_inegi = 'data/dataset_inegi.csv'
+    path_dataset_inegi = 'data/inegi/dataset_inegi.csv'
     dataset_inegi = pd.read_csv(path_dataset_inegi, encoding='cp1252')
 
-    listado_beneficiarios, rowSum = load_datasets('data/productores_beneficiarios')
+    listado_beneficiarios = load_datasets('data/productores_beneficiarios')
 
     dataset_inegi_clean = clean_inegi_data(dataset_inegi)
 
@@ -296,14 +305,14 @@ def data_cleaning2():
 
     diccionario.drop_duplicates(subset=['KEY_benef'], inplace=True)
 
-    save_to_csv(diccionario, 'data/productores_beneficiarios/diccionario_benef.csv')
+    save_to_csv(diccionario, 'data/productores_beneficiarios/diccionarios_E2/diccionario_benef.csv')
 
     listado_beneficiarios['ESTADO_Clean'] = listado_beneficiarios['ESTADO'].apply(clean_text)
     listado_beneficiarios['MUNICIPIO_Clean'] = listado_beneficiarios['MUNICIPIO'].apply(clean_text)
     listado_beneficiarios['Estado-mun-KEY'] = listado_beneficiarios['ESTADO_Clean'].astype(str) + '-' + \
                                               listado_beneficiarios['MUNICIPIO_Clean'].astype(str)
 
-    diccionario_verificado_simple = pd.read_csv('data/productores_beneficiarios/Diccionario_Simple.csv')
+    diccionario_verificado_simple = pd.read_csv('data/productores_beneficiarios/diccionarios_E2/Diccionario_Simple.csv')
 
     listado_beneficiarios_parte_I = pd.merge(listado_beneficiarios, diccionario_verificado_simple,
                                              left_on="Estado-mun-KEY", right_on="KEY_benef", how='left',
@@ -358,7 +367,7 @@ def data_cleaning2():
     listado_beneficiarios_parte_II['cve_ent'] = listado_beneficiarios_parte_II['cve_ent'].str.zfill(2)
     listado_beneficiarios_parte_II['cve_mun'] = listado_beneficiarios_parte_II['cve_mun'].str.zfill(3)
 
-    listado_beneficiarios_parte_II.to_csv('data/listados_completos/listado_de_beneficiarios_2023.csv', index=False)
+    listado_beneficiarios_parte_II.to_csv('data/listados_completos/listado_beneficiarios_2023.csv', index=False)
 
 
 def main():
