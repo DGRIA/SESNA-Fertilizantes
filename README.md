@@ -52,6 +52,7 @@ Sus funciones son las siguientes:
   Listado de Beneficiarios de 2019 a 2023 y Productores Autorizados.
 - Datos de acceso Repositorio. Aquellos que se usan como herramienta dentro del proyecto. En este caso los diccionarios
   para cada entregable y los dataset de INEGI.
+- En drive, en la carpeta de datos podemos encontrar la carpeta de data. Si surge algun problema recomendamos que descarguen la carpeta data y la sustituyan por la carpeta data en la raíz del repositorio.
 
 > **Nota:** Para descargar los datos adjuntos en este repositorio es necesario ubicarse en el directorio del proyecto y
 > ejecutar el siguiente comando: `git lfs pull`.
