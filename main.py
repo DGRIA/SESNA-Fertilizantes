@@ -392,6 +392,16 @@ def clean_data_screen(page_id, tab):
             'data/diccionarios_e2/Diccionario_manual.csv'
         ]
 
+        with open(f'data/productores_autorizados/diccionarios_e1/diccionario_prod_sin_VERACRUZ.csv', "rb") as file:
+            st.markdown("Descargar diccionario de localidades para validar:")
+            cols = st.columns([2, 1, 2])
+            cols[1].download_button(
+                label="Descargar",
+                data=file,
+                file_name="diccionario_prod_sin_VERACRUZ.csv",
+                mime="text/csv",
+            )
+
         listado_productores = load_datasets('data/productores_autorizados')
 
         stats = {
@@ -430,6 +440,17 @@ def clean_data_screen(page_id, tab):
             'data/inegi/dataset_inegi.csv',
             'data/productores_beneficiarios/diccionarios_E2/Diccionario_Simple.csv'
         ]
+
+        with open(f'data/productores_beneficiarios/diccionarios_E2/diccionario_benef.csv', "rb") as file:
+            st.markdown("Descargar diccionario de localidades para validar:")
+            cols = st.columns([2, 1, 2])
+            cols[1].download_button(
+                label="Descargar",
+                data=file,
+                file_name="diccionario_benef.csv",
+                mime="text/csv",
+            )
+
         listado_beneficiarios = load_datasets('data/productores_beneficiarios')
 
         stats = {
