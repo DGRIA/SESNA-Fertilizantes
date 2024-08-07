@@ -171,7 +171,7 @@ def clean_productores_and_benef_data(listado_productores=None, listado_beneficia
 
 def data_cleaning():
     path_dataset_inegi = 'data/inegi/dataset_inegi.csv'
-    dataset_inegi = pd.read_csv(path_dataset_inegi, encoding='cp1252')
+    dataset_inegi = pd.read_csv(path_dataset_inegi, encoding='cp1252' , dtype={'CVE_ENT': str, 'CVE_MUN': str})
 
     listado_productores = load_datasets('data/productores_autorizados')
 
@@ -198,10 +198,8 @@ def data_cleaning():
     diccionario = fuzzy_merge_prod(dataset_inegi_clean, Estados_productores, 'KEY_inegi', 'KEY_prod')
 
     diccionario = diccionario[['CVE_ENT', 'NOM_ENT', 'CVE_MUN', 'NOM_MUN', 'KEY_prod']]
-    diccionario['CVE_ENT'] = diccionario['CVE_ENT'].astype(str)
-    diccionario['CVE_MUN'] = diccionario['CVE_MUN'].astype(str)
-    print(diccionario['CVE_ENT'].unique())
-
+    #diccionario['CVE_ENT'] = diccionario['CVE_ENT'].astype(str)
+    #diccionario['CVE_MUN'] = diccionario['CVE_MUN'].astype(str)
     save_to_csv(diccionario, 'data/productores_autorizados/diccionarios_E1/diccionario_prod.csv')
 
     # Crear una variable KEY en listado de productores y el diccionario para hacer el join
@@ -214,10 +212,12 @@ def data_cleaning():
     
     diccionario_Sin_VC.to_csv('data/productores_autorizados/diccionarios_E1/diccionario_prod_sin_VERACRUZ.csv', index=False)
 
-    diccionario_manipulado = pd.read_csv('data/productores_autorizados/diccionarios_E1/diccionario_prod_sin_VERACRUZ.csv')
+    diccionario_manipulado = pd.read_csv('data/productores_autorizados/diccionarios_E1/diccionario_prod_sin_VERACRUZ.csv' , dtype={'CVE_ENT': str, 'CVE_MUN': str})
 
     listado_productores_complete = pd.merge(listado_productores, diccionario_manipulado, left_on="Estado-mun-KEY",
                                             right_on="KEY_prod", how='left', suffixes=('_prod', '_inegi'))
+    
+    print(listado_productores_complete['CVE_ENT'].unique())
 
     # listado_productores_complete[['CVE_ENT', 'CVE_MUN']] = listado_productores_complete['CVE_MUN_Unique'].str.split('-',expand=True)
     listado_productores_complete = listado_productores_complete[
@@ -232,7 +232,8 @@ def data_cleaning():
     listado_productores_complete.loc[
         (listado_productores_complete['NOMBRE (S)'].isna()) & (
             listado_productores_complete['ACUSE'].notna()), 'NOMBRE (S)'] = 'unknown'
-
+    
+    
     listado_productores_complete = listado_productores_complete.astype({
         'ESTADO': 'str',
         'MUNICIPIO': 'str',
@@ -248,6 +249,7 @@ def data_cleaning():
         'KEY_prod': 'str'
 
     })
+    
 
     listado_productores_complete = listado_productores_complete.rename(columns={
         'ESTADO': 'estado1',
@@ -281,7 +283,7 @@ def data_cleaning():
 
 def data_cleaning2():
     path_dataset_inegi = 'data/inegi/dataset_inegi.csv'
-    dataset_inegi = pd.read_csv(path_dataset_inegi, encoding='cp1252')
+    dataset_inegi = pd.read_csv(path_dataset_inegi, encoding='cp1252' , dtype={'CVE_ENT': str, 'CVE_MUN': str})
 
     listado_beneficiarios = load_datasets('data/productores_beneficiarios')
 

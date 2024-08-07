@@ -161,7 +161,7 @@ def cleaning_inegi():
 
 
 def data_cleaning3(dataset_inegi, dataset_benef, prefix):
-    dataset_inegi_clean = pd.read_csv(dataset_inegi)
+    dataset_inegi_clean = pd.read_csv(dataset_inegi, dtype={'CVE_ENT': str, 'CVE_MUN': str, 'CVE_LOC': str})
     dataset_benef = pd.read_csv(dataset_benef)
 
     cleaning_inegi()

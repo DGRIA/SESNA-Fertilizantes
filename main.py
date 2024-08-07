@@ -83,6 +83,7 @@ def display_love_mottum():
 
 
 def clear_directory(directory):
+    # Clear the directory of all files and subdirectories
     for filename in os.listdir(directory):
         if filename == '.gitkeep':  # Skip the .gitkeep file
             continue
@@ -97,6 +98,7 @@ def clear_directory(directory):
 
 
 def upload_manually(page_id, tab):
+    # Check if the required files are present
     if os.path.exists(f'data/productores_beneficiarios 2019-2022/diccionarios_E3/diccionario_LOC_{tab}_simple.csv'):
         st.success(
             "Hay un diccionario con los nombres de municipios validados. Si desea volver a ejecutar el "
@@ -130,6 +132,7 @@ def upload_manually(page_id, tab):
 
 
 def data_cleaning_function(dataset, tab):
+    # Thus function executes the process depending on the tab you are in, in this case it handles the data cleaning process.
     if dataset == 'Productores_autorizados_2023':
         if tab == '3':
             data_cleaning()
@@ -164,6 +167,7 @@ def data_cleaning_function(dataset, tab):
 
 
 def show_intro(page_id):
+    # This function shows the introduction screen for each tab.
     if st.session_state.main_page == 'Productores autorizados 2023':
         st.markdown((
             """
@@ -236,6 +240,7 @@ def show_intro(page_id):
 
 
 def start_process(page_id):
+    # This function starts the process of downloading the datasets.
     if st.session_state.main_page == 'Productores autorizados 2023':
         cols_button = st.columns([1, 1, 1])
         if cols_button[1].button('Descargar Listado Autorizados2023.', key=f'start_process_button_{page_id}'):
@@ -261,6 +266,7 @@ def start_process(page_id):
 
 def data_download(download_destination_folder, url=None, progress_callback=None,
                   urls=None):
+    # This function downloads the datasets from the URLs provided.
     if not os.path.exists('data'):
         os.makedirs('data')
         print("Directory 'data' missing, creating data directory.")
@@ -355,6 +361,7 @@ def data_download(download_destination_folder, url=None, progress_callback=None,
 
 
 def process_tab(dataset, year):
+    # This function processes the tab for the Beneficiarios fertilizantes 2019-2022 page.
     stats = {
         f'Número de filas_{year}': [dataset.shape[0]],
         f'Número de columnas_{year}': [dataset.shape[1]],
@@ -386,6 +393,7 @@ def process_tab(dataset, year):
 
 
 def clean_data_screen(page_id, tab):
+    # This function shows the screen for cleaning the data.
     if st.session_state.main_page == 'Productores autorizados 2023':
         required_files = [
             'data/inegi/dataset_inegi.csv',
@@ -534,6 +542,7 @@ def clean_data_screen(page_id, tab):
 
 
 def show_finished(tab):
+    # This function shows the finished screen for each tab.
     if st.session_state.main_page == 'Productores autorizados 2023':
         dataset_path = "data/listados_completos/listado_productores_complete2023.csv"
         if os.path.exists(dataset_path):
@@ -734,6 +743,7 @@ def show_finished(tab):
 
 
 if __name__ == '__main__':
+    # The overall structure definition of the app is as defined here.
     st.markdown('''
                 <h1 style='text-align: center; color: black; font-size: 30px;'>Servicio de ingeniería de datos para la extracción,
                 transformación y carga del Programa de Fertilizantes para el bienestar.
