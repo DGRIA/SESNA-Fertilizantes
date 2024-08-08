@@ -214,6 +214,8 @@ def data_cleaning3(dataset_inegi, dataset_benef, prefix):
 
     dataset_benef.dropna(inplace=True)
 
+    diccionario_MUN_simple.drop_duplicates(inplace=True)
+
     listado_beneficiarios_parte_I = pd.merge(dataset_benef, diccionario_MUN_simple, left_on="Estado-mun-KEY",
                                              right_on="KEY_benef_mun", how='left', suffixes=('_benef', '_inegi'))
     listado_beneficiarios_parte_II = pd.merge(listado_beneficiarios_parte_I, INEGI_UNIQUEMUN,
