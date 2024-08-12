@@ -402,6 +402,9 @@ def data_cleaning3(dataset_inegi, dataset_benef, prefix):
 
         print('lietsado: ', listado_beneficiarios_2019_match.shape)
         print('diccionario: ', diccionario_LOC_19_simple.columns)
+
+        diccionario_LOC_19_simple.drop_duplicates(inplace=True)
+
         listado_beneficiarios_parte_I_localidades = pd.merge(listado_beneficiarios_2019_match,
                                                              diccionario_LOC_19_simple, left_on="Municipio-loc-KEY",
                                                              right_on="KEY_benef_loc", how='left',
@@ -535,6 +538,9 @@ def data_cleaning3(dataset_inegi, dataset_benef, prefix):
 
         print('lietsado: ', listado_beneficiarios_2020_match.shape)
         print('diccionario: ', diccionario_LOC_20_simple.columns)
+
+        diccionario_LOC_20_simple.drop_duplicates(inplace=True)
+
         listado_beneficiarios_parte_I_localidades = pd.merge(listado_beneficiarios_2020_match,
                                                              diccionario_LOC_20_simple, left_on="Municipio-loc-KEY",
                                                              right_on="KEY_benef_loc", how='left',
@@ -656,6 +662,9 @@ def data_cleaning3(dataset_inegi, dataset_benef, prefix):
 
         print('lietsado: ', listado_beneficiarios_parte_II.shape)
         print('diccionario: ', diccionario_LOC_21_simple.columns)
+
+        diccionario_LOC_21_simple.drop_duplicates(inplace=True)
+
         listado_beneficiarios_parte_I_localidades = pd.merge(listado_beneficiarios_parte_II, diccionario_LOC_21_simple,
                                                              left_on="Municipio-loc-KEY",
                                                              right_on="KEY_benef_loc", how='left',
@@ -804,8 +813,9 @@ def data_cleaning3(dataset_inegi, dataset_benef, prefix):
 
         # Create KEY in listado beneficiarios
         listado_beneficiarios_parte_II['Municipio-loc-KEY'] = listado_beneficiarios_parte_II['MUNICIPIO_Clean'].astype(
-            str) + '-' + listado_beneficiarios_parte_II[
-                                                                  'LOCALIDAD_Clean'].astype(str)
+            str) + '-' + listado_beneficiarios_parte_II['LOCALIDAD_Clean'].astype(str)
+        
+        diccionario_LOC_22_simple.drop_duplicates(inplace=True)
 
         listado_beneficiarios_parte_I_localidades = pd.merge(listado_beneficiarios_parte_II, diccionario_LOC_22_simple,
                                                              left_on="Municipio-loc-KEY",
