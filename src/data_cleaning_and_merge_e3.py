@@ -465,7 +465,6 @@ def data_cleaning3(dataset_inegi, dataset_benef, prefix):
                                                                 'LOCALIDAD_c_benef'].astype(str)
 
         listado_beneficiarios_2020 = listado_beneficiarios_2020_match.copy()
-        listado_beneficiarios_2020.drop_duplicates(subset=['KEY_benef_loc'], inplace=True)
 
         listado_beneficiarios_2020 = listado_beneficiarios_2020.drop(columns=['Unnamed: 0'])
         entities = ['GUERRERO', 'MORELOS', 'TLAXCALA', 'PUEBLA', 'Guerrero', 'Puebla']
@@ -539,6 +538,7 @@ def data_cleaning3(dataset_inegi, dataset_benef, prefix):
         print('lietsado: ', listado_beneficiarios_2020_match.shape)
         print('diccionario: ', diccionario_LOC_20_simple.columns)
 
+        listado_beneficiarios_2020_match.drop_duplicates(keep='first', inplace=True)
         diccionario_LOC_20_simple.drop_duplicates(inplace=True)
 
         listado_beneficiarios_parte_I_localidades = pd.merge(listado_beneficiarios_2020_match,
@@ -589,8 +589,6 @@ def data_cleaning3(dataset_inegi, dataset_benef, prefix):
 
     elif prefix == 21:
         listado_beneficiarios_2021 = listado_beneficiarios_parte_II.copy()
-        print(listado_beneficiarios_2021.shape)
-        listado_beneficiarios_2021.drop_duplicates(subset=['KEY_benef_loc'], inplace=True)
         print(listado_beneficiarios_2021.shape)
 
         entities = ['GUERRERO', 'PUEBLA', 'MORELOS', 'TLAXCALA']
@@ -662,6 +660,8 @@ def data_cleaning3(dataset_inegi, dataset_benef, prefix):
 
         print('lietsado: ', listado_beneficiarios_parte_II.shape)
         print('diccionario: ', diccionario_LOC_21_simple.columns)
+
+        listado_beneficiarios_parte_II.drop_duplicates(inplace=True)
 
         diccionario_LOC_21_simple.drop_duplicates(inplace=True)
 
